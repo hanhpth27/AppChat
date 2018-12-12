@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">AppChat</string>
+    <string name="enter_mail">Enter your email</string>
+    <string name="enter_password">Enter your password</string>
+    <string name="forgot_password">Forgot your password?</string>
+    <string name="create_account">Create an account!</string>
+    <string name="login">Login</string>
+    <string name="login_fb">Login with Facebook</string>
+    <string name="remember_login">Remember login</string>
+    <string name="enter_name">Enter your name</string>
+    <string name="enter_password_again">Retype password</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="title_sign_up">Enter all your information!</string>
+</resources>
