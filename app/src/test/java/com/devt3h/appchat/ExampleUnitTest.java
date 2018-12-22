@@ -1,4 +1,4 @@
-package com.example.administrator.appchat;
+package com.devt3h.appchat;
 
 import org.junit.Test;
 
