@@ -88,7 +88,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                             reference = FirebaseDatabase.getInstance().getReference("Users").child(currentUserId);
                             HashMap<String, String> hashMap = new HashMap<>();
                             hashMap.put("id", currentUserId);
-                            hashMap.put("full_name", name);
+                            hashMap.put("name", name);
                             hashMap.put("avatarURL", "default");
 
                             reference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {

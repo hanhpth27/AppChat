@@ -1,14 +1,17 @@
 package com.devt3h.appchat.model;
 
 public class User {
+    private String id;
     private String name;
-    private String email;
     private String avatarURL;
 
-    public User(String name, String email, String avatarURL) {
+    public User(String id, String name, String avatarURL) {
+        this.id = id;
         this.name = name;
-        this.email = email;
         this.avatarURL = avatarURL;
+    }
+
+    public User() {
     }
 
     public String getName() {
@@ -19,13 +22,6 @@ public class User {
         this.name = name;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
 
     public String getAvatarURL() {
         return avatarURL;
@@ -33,5 +29,13 @@ public class User {
 
     public void setAvatarURL(String avatarURL) {
         this.avatarURL = avatarURL;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

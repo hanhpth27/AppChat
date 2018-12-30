@@ -52,7 +52,9 @@ public class MainActivity extends AppCompatActivity {
         viewPagerAdapter.addFragment(new FriendsFragment(),"Friend");
 
         viewPager.setAdapter(viewPagerAdapter);
+        viewPager.setCurrentItem(1);
         tabLayout.setupWithViewPager(viewPager);
+
     }
 
     @Override
