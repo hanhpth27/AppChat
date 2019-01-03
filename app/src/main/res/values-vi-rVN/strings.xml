@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AppChat</string>
+    <string name="welcome_to_appchat">Chào mừng bạn đến với AppChat</string>
+    <string name="create_a_new_account">Tạo tài khoản mới</string>
+    <string name="your_name">Họ và tên</string>
+    <string name="your_email">Địa chỉ Email</string>
+    <string name="password">Mật khẩu</string>
+    <string name="retype_password">Nhập lại mật khẩu</string>
+    <string name="login">Đăng nhập</string>
+    <string name="forgot_your_password">Quên mật khẩu ?</string>
+</resources>
