@@ -4,7 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+<<<<<<< HEAD
     tools:context=".ui.activity.WelcomeActivity">
+=======
+    tools:context=".WelcomeActivity">
+>>>>>>> 360d8d1a07eddebc4e45cd98871af9f90f8a0f1b
     <ImageView
         android:id="@+id/iv_logo"
         android:layout_width="156dp"

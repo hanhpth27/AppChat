@@ -4,7 +4,10 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+<<<<<<< HEAD
 import android.util.Log;
+=======
+>>>>>>> 360d8d1a07eddebc4e45cd98871af9f90f8a0f1b
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -30,7 +33,10 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
             return 0;
         else return fragments.size();
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 360d8d1a07eddebc4e45cd98871af9f90f8a0f1b
     public void addFragment(Fragment fragment, String title){
         fragments.add(fragment);
         titles.add(title);

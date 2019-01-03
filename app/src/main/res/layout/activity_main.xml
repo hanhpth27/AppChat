@@ -3,8 +3,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+<<<<<<< HEAD
     android:orientation="vertical"
     android:background="@color/white">
+=======
+    android:orientation="vertical">
+>>>>>>> 360d8d1a07eddebc4e45cd98871af9f90f8a0f1b
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -13,13 +17,21 @@
         <include
             android:id="@+id/main_app_bar"
             layout="@layout/app_bar_layout" />
+<<<<<<< HEAD
 
+=======
+>>>>>>> 360d8d1a07eddebc4e45cd98871af9f90f8a0f1b
         <android.support.design.widget.TabLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/tab_layout"
+<<<<<<< HEAD
             app:tabSelectedTextColor="@color/white"
             app:tabTextColor="@color/tab_not_selected_color">
+=======
+            app:tabSelectedTextColor="@color/tab_selected_color"
+            app:tabTextColor="@color/white">
+>>>>>>> 360d8d1a07eddebc4e45cd98871af9f90f8a0f1b
 
         </android.support.design.widget.TabLayout>
     </android.support.design.widget.AppBarLayout>
