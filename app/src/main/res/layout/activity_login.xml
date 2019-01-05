@@ -2,12 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-<<<<<<< HEAD
     android:orientation="vertical"
     android:background="@color/white">
-=======
-    android:orientation="vertical">
->>>>>>> 360d8d1a07eddebc4e45cd98871af9f90f8a0f1b
     <include
         android:id="@+id/toolbar"
         layout="@layout/app_bar_layout"/>

@@ -1,7 +1,6 @@
 package com.devt3h.appchat.model;
 
 public class User {
-<<<<<<< HEAD
     private String name;
     private String email;
     private String avatarURL;
@@ -12,22 +11,11 @@ public class User {
         this.email = email;
         this.avatarURL = avatarURL;
         this.id = id;
-=======
-    private String id;
-    private String name;
-    private String avatarURL;
-
-    public User(String id, String name, String avatarURL) {
-        this.id = id;
-        this.name = name;
-        this.avatarURL = avatarURL;
->>>>>>> 360d8d1a07eddebc4e45cd98871af9f90f8a0f1b
     }
 
     public User() {
     }
 
-<<<<<<< HEAD
     public String getId() {
         return id;
     }
@@ -36,8 +24,6 @@ public class User {
         this.id = id;
     }
 
-=======
->>>>>>> 360d8d1a07eddebc4e45cd98871af9f90f8a0f1b
     public String getName() {
         return name;
     }
@@ -46,7 +32,6 @@ public class User {
         this.name = name;
     }
 
-<<<<<<< HEAD
     public String getEmail() {
         return email;
     }
@@ -54,8 +39,6 @@ public class User {
     public void setEmail(String email) {
         this.email = email;
     }
-=======
->>>>>>> 360d8d1a07eddebc4e45cd98871af9f90f8a0f1b
 
     public String getAvatarURL() {
         return avatarURL;
@@ -64,15 +47,4 @@ public class User {
     public void setAvatarURL(String avatarURL) {
         this.avatarURL = avatarURL;
     }
-<<<<<<< HEAD
-=======
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
->>>>>>> 360d8d1a07eddebc4e45cd98871af9f90f8a0f1b
 }

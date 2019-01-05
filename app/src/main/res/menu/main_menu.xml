@@ -5,4 +5,8 @@
         android:title="Logout"
         app:showAsAction="never"></item>
 
+    <item android:id="@+id/btn_setting"
+        android:title="Account Setting"
+        app:showAsAction="never"></item>
+
 </menu>

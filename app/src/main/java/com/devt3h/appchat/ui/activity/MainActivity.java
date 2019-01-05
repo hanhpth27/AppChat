@@ -82,6 +82,10 @@ public class MainActivity extends AppCompatActivity {
                 mAuth.signOut();
                 logOutUser();
                 break;
+            case R.id.btn_setting:
+                Intent intent = new Intent(MainActivity.this, SettingActivity.class);
+                startActivity(intent);
+                break;
             default:
                 break;
         }
