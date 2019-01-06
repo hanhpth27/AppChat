@@ -1,5 +1,6 @@
 package com.devt3h.appchat.ui.activity;
 
+import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,9 +10,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 
 import com.devt3h.appchat.R;
+import com.devt3h.appchat.helper.Constants;
 import com.devt3h.appchat.helper.Helper;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -21,15 +24,19 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
     private Button btnRegister;
     private Toolbar toolbar;
-    private EditText edtName, edtEmail, edtPassword, edtRetypePassword;
+    private EditText edtName, edtEmail, edtPassword, edtRetypePassword, edtBirthday;
     private FirebaseAuth mAuth;
     private DatabaseReference reference;
     private ProgressDialog progressRegisterDialog;
+
+    private Calendar myCalendar = Calendar.getInstance();
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +54,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         edtEmail = findViewById(R.id.edt_email);
         edtPassword = findViewById(R.id.edt_password);
         edtRetypePassword = findViewById(R.id.edt_retype_password);
+
+        edtBirthday = findViewById(R.id.edt_birthday);
+        setDatePicker();
+
         btnRegister = findViewById(R.id.btn_register);
         btnRegister.setOnClickListener(this);
 
@@ -61,19 +72,20 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         String email = edtEmail.getText().toString();
         String password = edtPassword.getText().toString();
         String retype_password = edtRetypePassword.getText().toString();
+        String birthday = edtBirthday.getText().toString();
 
-        if(name.isEmpty() || email.isEmpty() || password.isEmpty() || retype_password.isEmpty()){
+        if(name.isEmpty() || email.isEmpty() || password.isEmpty() || retype_password.isEmpty() || birthday.isEmpty()){
             Helper.showToast(RegisterActivity.this,"Bạn phải điền đầy đủ thông tin");
         }else if(!password.equals(retype_password)){
             Helper.showToast(RegisterActivity.this,"Hai mật khẩu phải giống nhau");
         }else if(password.length() < 6){
             Helper.showToast(RegisterActivity.this,"Mật khẩu phải lớn hơn 6 ký tự");
         }else {
-            register(name,email,password);
+            register(name,email,password, birthday);
         }
 
     }
-    private void register(final String name, String email, String password){
+    private void register(final String name, String email, String password, final String birthday){
         progressRegisterDialog.setTitle("Creating new account");
         progressRegisterDialog.setMessage("Please wait ...");
         progressRegisterDialog.show();
@@ -89,8 +101,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                             reference = FirebaseDatabase.getInstance().getReference("Users").child(currentUserId);
                             HashMap<String, String> hashMap = new HashMap<>();
                             hashMap.put("id", currentUserId);
-                            hashMap.put("full_name", name);
-                            hashMap.put("avatarURL", "default");
+                            hashMap.put(Constants.KEY_USER_NAME, name);
+                            hashMap.put(Constants.KEY_DEFAULT, "default");
+                            hashMap.put(Constants.KEY_BIRTHDAY, birthday);
 
                             reference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
@@ -111,5 +124,39 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onBackPressed() {
+    }
+
+    private void setDatePicker(){
+        final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                  int dayOfMonth) {
+                // TODO Auto-generated method stub
+                myCalendar.set(Calendar.YEAR, year);
+                myCalendar.set(Calendar.MONTH, monthOfYear);
+                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                updateLabel();
+            }
+
+        };
+
+        edtBirthday.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                new DatePickerDialog(RegisterActivity.this, date, myCalendar
+                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+            }
+        });
+    }
+
+    private void updateLabel() {
+        String myFormat = "dd/MM/yyyy"; //In which you need put here
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat);
+
+        edtBirthday.setText(sdf.format(myCalendar.getTime()));
     }
 }

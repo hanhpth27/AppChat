@@ -4,8 +4,14 @@
     <string name="create_a_new_account">Create a new account</string>
     <string name="your_name">Your Name</string>
     <string name="your_email">Your Email</string>
+    <string name="your_birthday">Your birthday</string>
+    <string name="yout_status">Your status</string>
     <string name="password">Password</string>
     <string name="retype_password">Retype Password</string>
     <string name="login">Login Your Account</string>
     <string name="forgot_your_password">Forgot your password ?</string>
+    <string name="setting_successeful">You change avatar is successful</string>
+    <string name="setting_error">Error occured</string>
+    <string name="setting_title">Setting profile</string>
+    <string name="find_friend_title">Find Friend</string>
 </resources>

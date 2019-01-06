@@ -13,14 +13,30 @@
         android:layout_height="50dp"
         android:id="@+id/img_avatar"
         android:src="@drawable/ic_avatar"/>
-    
-    <TextView
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Username"
-        android:textColor="@color/black"
-        android:gravity="center_vertical"
-        android:textSize="16sp"
-        android:paddingLeft="16dp"
-        android:id="@+id/tv_username"/>
+        android:orientation="vertical"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Username"
+            android:textColor="@color/black"
+            android:gravity="center_vertical"
+            android:textSize="16sp"
+            android:paddingLeft="16dp"
+            android:id="@+id/tv_username"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Birthday"
+            android:gravity="center_vertical"
+            android:textSize="14sp"
+            android:paddingLeft="16dp"
+            android:id="@+id/tv_birthday"/>
+    </LinearLayout>
 </LinearLayout>

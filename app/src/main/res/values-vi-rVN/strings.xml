@@ -9,4 +9,7 @@
     <string name="retype_password">Nhập lại mật khẩu</string>
     <string name="login">Đăng nhập</string>
     <string name="forgot_your_password">Quên mật khẩu ?</string>
+    <string name="setting_successeful">Bạn đã thay đổi thành công</string>
+    <string name="setting_error">Thay đổi bị lỗi, vui lòng thử lại</string>
+    <string name="setting_title">Cài đặt tài khoản</string>
 </resources>

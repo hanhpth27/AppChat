@@ -86,6 +86,10 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, SettingActivity.class);
                 startActivity(intent);
                 break;
+            case R.id.btn_find_friend:
+                Intent intent1 = new Intent(MainActivity.this, FindFriendActivity.class);
+                startActivity(intent1);
+                break;
             default:
                 break;
         }

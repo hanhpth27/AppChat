@@ -9,4 +9,9 @@
         android:title="Account Setting"
         app:showAsAction="never"></item>
 
+    <item android:id="@+id/btn_find_friend"
+        android:title="Find Friend"
+        app:showAsAction="never"></item>
+
+
 </menu>

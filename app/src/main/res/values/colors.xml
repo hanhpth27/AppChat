@@ -8,5 +8,6 @@
     <color name="black">#000000</color>
     <color name="color_green_500">#4CAF50</color>
     <color name="color_grey_500">#9E9E9E</color>
+    <color name="color_gray_700">#455A64</color>
     <color name="colorPrimaryLight">#90008577</color>
 </resources>

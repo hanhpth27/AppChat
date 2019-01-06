@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.devt3h.appchat.R;
+import com.devt3h.appchat.helper.Constants;
 import com.devt3h.appchat.model.User;
 import com.squareup.picasso.Picasso;
 
@@ -31,9 +32,10 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder>{
     @Override
     public void onBindViewHolder(@NonNull UserHolder userHolder, int position) {
         User user = iUser.getUser(position);
-        userHolder.tvUsername.setText(user.getName());
-        if(!user.getAvatarURL().equals("default")){
-            String url = user.getAvatarURL();
+        userHolder.tvUsername.setText(user.getFull_name());
+        userHolder.tvBirthday.setText(user.getBirthday());
+        String url = user.getAvatarURL();
+        if(url!= null && !url.equals(Constants.KEY_DEFAULT)){
             Picasso.get().load(url)
                     .resize(50, 50)
                     .centerCrop()
@@ -47,13 +49,14 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder>{
     }
 
     public class UserHolder extends RecyclerView.ViewHolder{
-        private TextView tvUsername;
+        private TextView tvUsername, tvBirthday;
         private CircleImageView imgAvatar;
 
         public UserHolder(@NonNull View itemView) {
             super(itemView);
             tvUsername = itemView.findViewById(R.id.tv_username);
             imgAvatar = itemView.findViewById(R.id.img_avatar);
+            tvBirthday = itemView.findViewById(R.id.tv_birthday);
         }
     }
 

@@ -49,6 +49,7 @@ public class FriendsFragment extends Fragment {
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
 
+        // read data form table Friend
         databaseReference.child(Constants.ARG_FRIENDS).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -85,6 +86,7 @@ public class FriendsFragment extends Fragment {
             }
         });
 
+        // read data from table Users with userId of table Friend
         databaseReference.child(Constants.ARG_USERS).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
