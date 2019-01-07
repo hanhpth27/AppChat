@@ -14,4 +14,5 @@
     <string name="setting_error">Error occured</string>
     <string name="setting_title">Setting profile</string>
     <string name="find_friend_title">Find Friend</string>
+    <string name="type_message">Type message ..</string>
 </resources>

@@ -4,4 +4,5 @@
     <dimen name="margin_input_horizontal">16dp</dimen>
     <dimen name="margin_top">10dp</dimen>
     <dimen name="margin_bottom">16dp</dimen>
+    <dimen name="radius_message">10dp</dimen>
 </resources>
