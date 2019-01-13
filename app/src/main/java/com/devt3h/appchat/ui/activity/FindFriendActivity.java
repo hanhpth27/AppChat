@@ -42,10 +42,12 @@ public class FindFriendActivity extends AppCompatActivity {
         setContentView(R.layout.activity_find_friend);
 
         inits();
+
         imgSearch.setOnClickListener(new View.OnClickListener() {
-            String key = edtKey.getText().toString();
+
             @Override
             public void onClick(View view) {
+                String key = edtKey.getText().toString();
                 searchFriend(key);
             }
         });
@@ -67,10 +69,92 @@ public class FindFriendActivity extends AppCompatActivity {
         userList = new ArrayList<>();
     }
 
-    private void searchFriend(String key){
-        Query query = mDatabase.orderByChild(Constants.KEY_USER_NAME)
-                .startAt(key).endAt(key + "\uf8ff");
+    private void searchFriend(final String key){
+        Query query = mDatabase.orderByChild(Constants.KEY_USER_NAME);
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                userList.clear();
+                for (DataSnapshot task : dataSnapshot.getChildren()) {
+                    User user = task.getValue(User.class);
+                    if ( user.getName() != null && user.getName().toLowerCase().contains(key.toLowerCase())){
+                        userList.add(user);
+                    }
 
+                }
+                if(rvUser.getAdapter() == null){
+                    adapter = new UserAdapter(new UserAdapter.IUser() {
+                        @Override
+                        public int getCount() {
+                            if (userList== null) return 0;
+                            return userList.size();
+                        }
+
+                        @Override
+                        public User getUser(int position) {
+                            return userList.get(position);
+                        }
+                    });
+
+                    rvUser.setAdapter(adapter);
+                }else {
+                    rvUser.getAdapter().notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+//        query.addChildEventListener(new ChildEventListener() {
+//            @Override
+//            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//                userList.clear();
+//                if (adapter!=null) adapter.notifyDataSetChanged();
+//                User user = dataSnapshot.getValue(User.class);
+//                if(user!=null) userList.add(user);
+//
+//                adapter = new UserAdapter(new UserAdapter.IUser() {
+//                    @Override
+//                    public int getCount() {
+//                        if (userList== null) return 0;
+//                        return userList.size();
+//                    }
+//
+//                    @Override
+//                    public User getUser(int position) {
+//                        return userList.get(position);
+//                    }
+//                });
+//
+//                rvUser.setAdapter(adapter);
+//            }
+//
+//            @Override
+//            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//
+//            }
+//
+//            @Override
+//            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+//
+//            }
+//
+//            @Override
+//            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+    }
+
+    private void searchUser(String key){
+        Query query = mDatabase.orderByChild(Constants.KEY_USER_NAME).startAt(key).endAt(key);
         query.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {

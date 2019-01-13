@@ -1,5 +1,6 @@
 package com.devt3h.appchat.adapter;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 import com.devt3h.appchat.R;
 import com.devt3h.appchat.helper.Constants;
 import com.devt3h.appchat.model.User;
+import com.devt3h.appchat.ui.activity.DetailUserActivity;
 import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -30,9 +32,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder>{
     }
 
     @Override
-    public void onBindViewHolder(@NonNull UserHolder userHolder, int position) {
-        User user = iUser.getUser(position);
-        userHolder.tvUsername.setText(user.getFull_name());
+    public void onBindViewHolder(@NonNull final UserHolder userHolder, int position) {
+        final User user = iUser.getUser(position);
+        userHolder.tvUsername.setText(user.getName());
         userHolder.tvBirthday.setText(user.getBirthday());
         String url = user.getAvatarURL();
         if(url!= null && !url.equals(Constants.KEY_DEFAULT)){
@@ -40,7 +42,23 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder>{
                     .resize(50, 50)
                     .centerCrop()
                     .into(userHolder.imgAvatar);
+        }else {
+            Picasso.get()
+                    .load(R.drawable.default_profile)
+                    .resize(50, 50)
+                    .centerCrop()
+                    .into(userHolder.imgAvatar);
         }
+
+        userHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String id_user_visit = user.getId();
+                Intent intent = new Intent(userHolder.itemView.getContext(), DetailUserActivity.class);
+                intent.putExtra(Constants.KEY_VISIT_USER_ID, id_user_visit);
+                userHolder.itemView.getContext().startActivity(intent);
+            }
+        });
     }
 
     @Override

@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.activity.FindFriendActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/white">
 
     <include layout="@layout/app_bar_layout"
         android:id="@+id/toolbar_friend">
@@ -31,7 +32,8 @@
             android:layout_height="50dp"
             android:src="@drawable/ic_search_white_36dp"
             android:padding="8dp"
-            android:id="@+id/btn_search" />
+            android:id="@+id/btn_search"
+            android:background="?attr/selectableItemBackgroundBorderless"/>
 
     </LinearLayout>
 

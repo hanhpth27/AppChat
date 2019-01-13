@@ -12,4 +12,14 @@
     <string name="setting_successeful">Bạn đã thay đổi thành công</string>
     <string name="setting_error">Thay đổi bị lỗi, vui lòng thử lại</string>
     <string name="setting_title">Cài đặt tài khoản</string>
+    <string name="find_friend_title">Tìm bạn bè</string>
+    <string name="send_request_frienf">Gửi lời mơi kết bạn</string>
+    <string name="accept_request_friend">Chấp nhận lời mới kết bạn</string>
+    <string name="decline_request_friend">Xóa lời mời</string>
+    <string name="unfriend">Hủy kết bạn</string>
+    <string name="requested_friend">Bạn đã gửi lời mời kết bạn</string>
+    <string name="accept_successeful">Giờ hai bạn đã là bạn bè!</string>
+    <string name="decline_done">Đã xóa</string>
+    <string name="unfriend_done">Đã hủy kết bạn</string>
+    <string name="send_request_done">Bạn đã gửi lời mời kết bạn</string>
 </resources>
