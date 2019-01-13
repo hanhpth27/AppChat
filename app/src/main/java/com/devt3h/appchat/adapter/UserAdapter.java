@@ -1,5 +1,6 @@
 package com.devt3h.appchat.adapter;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -12,20 +13,25 @@ import com.devt3h.appchat.R;
 import com.devt3h.appchat.helper.Constants;
 import com.devt3h.appchat.model.User;
 import com.devt3h.appchat.ui.activity.DetailUserActivity;
+import com.devt3h.appchat.ui.activity.ChatActivity;
 import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder>{
     private IUser iUser;
+    private Context context;
+    private boolean isAdapterChat;
 
-    public UserAdapter(IUser iUser) {
+    public UserAdapter(IUser iUser, boolean isAdapterChat) {
         this.iUser = iUser;
+        this.isAdapterChat = isAdapterChat;
     }
 
     @NonNull
     @Override
     public UserHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+        context = viewGroup.getContext();
         LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
         View v = inflater.inflate(R.layout.user_item, viewGroup, false);
         return new UserHolder(v);
@@ -53,11 +59,18 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder>{
         userHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String id_user_visit = user.getId();
-                Intent intent = new Intent(userHolder.itemView.getContext(), DetailUserActivity.class);
-                intent.putExtra(Constants.KEY_VISIT_USER_ID, id_user_visit);
-                userHolder.itemView.getContext().startActivity(intent);
+                if (isAdapterChat){
+                    Intent intent = new Intent(context,ChatActivity.class);
+                    intent.putExtra("userId",user.getId());
+                    context.startActivity(intent);
+                }else {
+                    String id_user_visit = user.getId();
+                    Intent intent = new Intent(userHolder.itemView.getContext(), DetailUserActivity.class);
+                    intent.putExtra(Constants.KEY_VISIT_USER_ID, id_user_visit);
+                    userHolder.itemView.getContext().startActivity(intent);
+                }
             }
+
         });
     }
 

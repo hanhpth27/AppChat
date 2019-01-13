@@ -112,7 +112,7 @@ public class FriendsFragment extends Fragment {
                     public User getUser(int position) {
                         return friendList.get(position);
                     }
-                });
+                }, true);
 
                 rvUsers.setAdapter(adapter);
             }

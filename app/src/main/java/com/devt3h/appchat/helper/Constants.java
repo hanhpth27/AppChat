@@ -20,4 +20,7 @@ public class Constants {
     public static final String YOU_REQUEST_FRIEND = "you requesting friend";
     public static final String YOU_RECEIVE_REQUEST = "you receive request";
     public static final String NOT_FRIEND = "not friend";
+
+    public static final int TYPE_MESSAGE_LEFT = 0;
+    public static final int TYPE_MESSAGE_RIGHT = 1;
 }

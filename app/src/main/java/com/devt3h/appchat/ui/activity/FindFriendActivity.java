@@ -94,7 +94,7 @@ public class FindFriendActivity extends AppCompatActivity {
                         public User getUser(int position) {
                             return userList.get(position);
                         }
-                    });
+                    }, false);
 
                     rvUser.setAdapter(adapter);
                 }else {
@@ -174,7 +174,7 @@ public class FindFriendActivity extends AppCompatActivity {
                     public User getUser(int position) {
                         return userList.get(position);
                     }
-                });
+                }, false);
 
                 rvUser.setAdapter(adapter);
             }

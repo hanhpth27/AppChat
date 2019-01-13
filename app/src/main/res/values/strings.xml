@@ -14,6 +14,7 @@
     <string name="setting_error">Error occured</string>
     <string name="setting_title">Setting profile</string>
     <string name="find_friend_title">Find Friend</string>
+
     <string name="send_request_frienf">Send Request Friend</string>
     <string name="accept_request_friend">Accept Friend Request</string>
     <string name="decline_request_friend">Decline Friend Request</string>
@@ -23,4 +24,6 @@
     <string name="decline_done">Decline done!</string>
     <string name="unfriend_done">You unfriend done!</string>
     <string name="send_request_done">You sent request to friend</string>
+
+    <string name="type_message">Type message ..</string>
 </resources>
