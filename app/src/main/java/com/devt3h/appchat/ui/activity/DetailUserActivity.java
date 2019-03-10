@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.devt3h.appchat.R;
 import com.devt3h.appchat.helper.Constants;
 import com.devt3h.appchat.helper.Helper;
+import com.devt3h.appchat.model.AccountUser;
 import com.devt3h.appchat.model.Friend;
 import com.devt3h.appchat.model.User;
 import com.devt3h.appchat.ui.fragment.AcceptDeclineFragment;
@@ -32,7 +33,7 @@ import com.squareup.picasso.Picasso;
 public class DetailUserActivity extends AppCompatActivity {
     //private Button btnRequest, btnDeline;
     private TextView tvUsername, tvBirthday;
-    private ImageView imgAvatar;
+    private ImageView imgAvatar, imgCover;
 
     private DatabaseReference databaseReference;
 
@@ -55,15 +56,23 @@ public class DetailUserActivity extends AppCompatActivity {
         databaseReference.child(Constants.ARG_USERS).child(user_id).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                User user = dataSnapshot.getValue(User.class);
+                AccountUser user = dataSnapshot.getValue(AccountUser.class);
                 if(user!=null){
                     tvUsername.setText(user.getName());
                     tvBirthday.setText(user.getBirthday());
                     if(!user.getAvatarURL().equals(Constants.KEY_DEFAULT)){
                         Picasso.get().load(user.getAvatarURL())
-                                .resize(250, 250)
+                                .resize(getResources().getDimensionPixelSize(R.dimen.size_image),
+                                        getResources().getDimensionPixelSize(R.dimen.size_image))
                                 .centerCrop()
                                 .into(imgAvatar);
+                    }
+
+                    if(!user.getCoverURL().equals(Constants.KEY_DEFAULT)){
+                        Picasso.get().load(user.getCoverURL())
+                                .resize(250, 250)
+                                .centerCrop()
+                                .into(imgCover);
                     }
                 }
             }
@@ -134,6 +143,7 @@ public class DetailUserActivity extends AppCompatActivity {
         tvUsername = findViewById(R.id.tv_username);
         tvBirthday = findViewById(R.id.tv_birthday);
         imgAvatar = findViewById(R.id.img_avatar);
+        imgCover = findViewById(R.id.img_cover);
 
         manager = getSupportFragmentManager();
 

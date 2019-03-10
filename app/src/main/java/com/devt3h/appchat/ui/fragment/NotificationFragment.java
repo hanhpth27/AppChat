@@ -1,4 +1,6 @@
 package com.devt3h.appchat.ui.fragment;
 
-public class NotificationFragment {
+import android.support.v4.app.Fragment;
+
+public class NotificationFragment extends Fragment {
 }

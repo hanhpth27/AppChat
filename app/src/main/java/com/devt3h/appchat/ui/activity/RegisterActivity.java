@@ -32,6 +32,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private Button btnRegister;
     private Toolbar toolbar;
     private EditText edtName, edtEmail, edtPassword, edtRetypePassword, edtBirthday;
+    private EditText edtCareer, edtCountry;
     private FirebaseAuth mAuth;
     private DatabaseReference reference;
     private ProgressDialog progressRegisterDialog;
@@ -54,6 +55,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         edtEmail = findViewById(R.id.edt_email);
         edtPassword = findViewById(R.id.edt_password);
         edtRetypePassword = findViewById(R.id.edt_retype_password);
+        edtCareer = findViewById(R.id.edt_career);
+        edtCountry = findViewById(R.id.edt_country);
 
         edtBirthday = findViewById(R.id.edt_birthday);
         setDatePicker();
@@ -73,6 +76,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         String password = edtPassword.getText().toString();
         String retype_password = edtRetypePassword.getText().toString();
         String birthday = edtBirthday.getText().toString();
+        String career = edtCareer.getText().toString();
+        String country = edtCountry.getText().toString();
 
         if(name.isEmpty() || email.isEmpty() || password.isEmpty() || retype_password.isEmpty() || birthday.isEmpty()){
             Helper.showToast(RegisterActivity.this,"Bạn phải điền đầy đủ thông tin");
@@ -81,11 +86,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         }else if(password.length() < 6){
             Helper.showToast(RegisterActivity.this,"Mật khẩu phải lớn hơn 6 ký tự");
         }else {
-            register(name,email,password, birthday);
+            register(name,email,password, birthday, career, country);
         }
 
     }
-    private void register(final String name, String email, String password, final String birthday){
+    private void register(final String name, String email, String password, final String birthday, String career, String country){
         progressRegisterDialog.setTitle("Creating new account");
         progressRegisterDialog.setMessage("Please wait ...");
         progressRegisterDialog.show();
@@ -102,8 +107,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                             HashMap<String, String> hashMap = new HashMap<>();
                             hashMap.put("id", currentUserId);
                             hashMap.put(Constants.KEY_USER_NAME, name);
-                            hashMap.put(Constants.KEY_DEFAULT, "default");
+                            hashMap.put(Constants.KEY_AVATAR_URL, Constants.KEY_DEFAULT);
+                            hashMap.put(Constants.KEY_COVER_URL, Constants.KEY_DEFAULT);
                             hashMap.put(Constants.KEY_BIRTHDAY, birthday);
+                            hashMap.put(Constants.KEY_CAREER, career);
+                            hashMap.put(Constants.KEY_COUNTRY, country);
 
                             reference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override

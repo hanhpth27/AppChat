@@ -1,5 +1,6 @@
 package com.devt3h.appchat.adapter;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -60,6 +61,11 @@ public class RequestFriendAdapter extends RecyclerView.Adapter<RequestFriendAdap
                 iRequestFriend.declineRequestFriend(position);
             }
         });
+
+        requestHolder.imgAvatar.setOnClickListener(view -> {
+            //do something
+            iRequestFriend.showDetailUser(position);
+        });
     }
 
     @Override
@@ -87,5 +93,7 @@ public class RequestFriendAdapter extends RecyclerView.Adapter<RequestFriendAdap
         void acceptRequestFriend(int postion);
 
         void declineRequestFriend(int position);
+
+        void showDetailUser(int position);
     }
 }

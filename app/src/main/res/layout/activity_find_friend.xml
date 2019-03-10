@@ -8,32 +8,20 @@
     android:orientation="vertical"
     android:background="@color/white">
 
-    <include layout="@layout/app_bar_layout"
-        android:id="@+id/toolbar_friend">
-
-    </include>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimaryLight"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:padding="5dp">
 
-        <EditText
+        <MultiAutoCompleteTextView
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:backgroundTint="@color/white"
             android:layout_weight="2"
             android:id="@+id/edt_key"
             android:textColor="@color/white"/>
-
-        <android.support.v7.widget.AppCompatImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/ic_search_white_36dp"
-            android:padding="8dp"
-            android:id="@+id/btn_search"
-            android:background="?attr/selectableItemBackgroundBorderless"/>
 
     </LinearLayout>
 

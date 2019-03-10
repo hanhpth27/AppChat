@@ -3,23 +3,30 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimaryLight"
-    android:padding="4dp">
+    android:background="@color/color_grey_500">
 
     <include layout="@layout/app_bar_layout"
         android:id="@+id/setting_account"/>
 
+    <android.support.v7.widget.AppCompatImageView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/size_image_cover"
+        android:id="@+id/img_cover"
+        android:src="@drawable/img_cover_default"
+        android:scaleType="centerCrop"/>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/setting_account"
         android:paddingLeft= "@dimen/margin_input_horizontal"
-        android:paddingRight="@dimen/margin_input_horizontal">
+        android:paddingRight="@dimen/margin_input_horizontal"
+        android:layout_below="@id/img_cover"
+        android:layout_marginTop="-100dp">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/img_avatar"
-            android:layout_width="250dp"
-            android:layout_height="250dp"
+            android:layout_width="@dimen/size_image"
+            android:layout_height="@dimen/size_image"
             android:layout_centerHorizontal="true"
             android:src="@drawable/default_profile" />
 
@@ -71,6 +78,21 @@
                     android:layout_height="wrap_content" android:layout_marginTop="@dimen/margin_input_top"
                     android:hint="@string/password"
                     android:inputType="textPassword"
+                    android:textColorHint="@color/white"
+                    android:textColor="@color/white"
+                    android:backgroundTint="@color/white"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/edt_status"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_input_top"
+                    android:hint="@string/your_status"
                     android:textColorHint="@color/white"
                     android:textColor="@color/white"
                     android:backgroundTint="@color/white"/>

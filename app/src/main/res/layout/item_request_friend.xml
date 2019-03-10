@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="10dp"
+    android:padding="5dp"
     android:orientation="horizontal"
     android:layout_marginBottom="5dp"
     android:background="@color/white">
@@ -28,8 +28,8 @@
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/btn_accept"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
+        android:layout_height="40dp"
+        android:layout_gravity="center_vertical"
         android:background="@drawable/bg_button_accept"
         android:text="Accept"
         android:textColor="@color/white"
@@ -40,8 +40,8 @@
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/btn_decline"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
+        android:layout_height="40dp"
+        android:layout_gravity="center_vertical"
         android:background="@drawable/bg_button_decline"
         android:text="Decline"
         android:textColor="@color/white"

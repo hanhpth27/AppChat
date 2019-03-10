@@ -2,20 +2,24 @@
     <string name="app_name">AppChat</string>
     <string name="welcome_to_appchat">Welcome to AppChat</string>
     <string name="create_a_new_account">Create a new account</string>
-    <string name="your_name">Your Name</string>
-    <string name="your_email">Your Email</string>
+    <string name="your_name">Your name</string>
+    <string name="your_email">Your email</string>
+    <string name="your_status">You status</string>
     <string name="your_birthday">Your birthday</string>
+    <string name="your_career">Your career</string>
+    <string name="your_country">Your country</string>
     <string name="yout_status">Your status</string>
     <string name="password">Password</string>
     <string name="retype_password">Retype Password</string>
     <string name="login">Login Your Account</string>
     <string name="forgot_your_password">Forgot your password ?</string>
-    <string name="setting_successeful">You change avatar is successful</string>
+    <string name="setting_successeful">You change profile is successful</string>
     <string name="setting_error">Error occured</string>
     <string name="setting_title">Setting profile</string>
     <string name="find_friend_title">Find Friend</string>
 
     <string name="send_request_frienf">Send Request Friend</string>
+    <string name="search">Search</string>
     <string name="accept_request_friend">Accept Friend Request</string>
     <string name="decline_request_friend">Decline Friend Request</string>
     <string name="unfriend">Unfriend</string>
@@ -24,6 +28,9 @@
     <string name="decline_done">Decline done!</string>
     <string name="unfriend_done">You unfriend done!</string>
     <string name="send_request_done">You sent request to friend</string>
+    <string name="conform_change_profile">Are you sure change your profile?</string>
 
     <string name="type_message">Type message ..</string>
+    <string name="request_status">Please update your status</string>
+    <string name="not_change">You don\'t change anything</string>
 </resources>

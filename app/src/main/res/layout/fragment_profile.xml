@@ -11,7 +11,7 @@
 
     <android.support.v7.widget.AppCompatImageView
         android:layout_width="match_parent"
-        android:layout_height="164dp"
+        android:layout_height="@dimen/size_image_cover"
         android:id="@+id/img_cover"
         android:src="@drawable/img_cover_default"
         android:scaleType="centerCrop"/>
@@ -33,7 +33,7 @@
         android:gravity="center"
         android:layout_marginTop="15dp"
         android:textColor="@color/white"
-        android:textSize="18sp"
+        android:textSize="24sp"
         android:layout_below="@id/img_avatar"/>
 
     <TextView
@@ -48,6 +48,7 @@
         android:gravity="center"/>
 
     <RelativeLayout
+        android:id="@+id/rl_infor"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/margin_input_horizontal"
@@ -92,13 +93,42 @@
 
     </RelativeLayout>
 
-    <FrameLayout
+    <LinearLayout
+        android:id="@+id/ll_information"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/fl_content_button"
-        android:layout_alignParentBottom="true">
+        android:layout_height="55dp"
+        android:layout_below="@id/rl_infor"
+        android:orientation="horizontal"
+        android:layout_marginTop="56dp">
 
-    </FrameLayout>
+        <TextView
+            android:id="@+id/tv_post"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:lines="2"
+            android:text="Number \npost"
+            android:textColor="@color/white" />
 
+        <TextView
+            android:id="@+id/tv_followers"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:lines="2"
+            android:text="Number \nfollowers"
+            android:textColor="@color/white" />
 
+        <TextView
+            android:id="@+id/tv_edit_profile"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Edit \nprofile"
+            android:lines="2"
+            android:textColor="@color/white" />
+    </LinearLayout>
 </RelativeLayout>

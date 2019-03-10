@@ -6,10 +6,15 @@ public class User {
     private String avatarURL;
     private String id;
     private String birthday;
-
+    private String country;
+    private String status;
+    private String career;
+    private boolean isOnline;
+    private long lastUpdateStatus;
 
     public User() {
     }
+
 
     public User(String name, String email, String avatarURL, String id, String birthday) {
         this.name = name;
@@ -57,5 +62,44 @@ public class User {
 
     public void setAvatarURL(String avatarURL) {
         this.avatarURL = avatarURL;
+    }
+
+    public boolean isOnline() {
+        return isOnline;
+    }
+
+    public void setOnline(boolean online) {
+        isOnline = online;
+    }
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getCareer() {
+        return career;
+    }
+
+    public void setCareer(String career) {
+        this.career = career;
+    }
+
+    public long getLastUpdateStatus() {
+        return lastUpdateStatus;
+    }
+
+    public void setLastUpdateStatus(long lastUpdateStatus) {
+        this.lastUpdateStatus = lastUpdateStatus;
     }
 }

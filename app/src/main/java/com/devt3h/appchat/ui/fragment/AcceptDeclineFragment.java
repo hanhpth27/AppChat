@@ -1,5 +1,7 @@
 package com.devt3h.appchat.ui.fragment;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -51,19 +53,28 @@ public class AcceptDeclineFragment extends Fragment implements View.OnClickListe
                 break;
         }
 
-        getActivity().finish();
     }
 
     private void declineRequest(String key) {
+        Task task = mDatabase.child(key).removeValue();
+        if(task.isSuccessful()){
+            Helper.showToast(getContext(), getResources().getString(R.string.decline_done));
+        }else{
+            Helper.showToast(getContext(), getResources().getString(R.string.setting_error));
+        }
+    }
+
+    private void acceptedRequest(String key) {
+
         mDatabase.child(key).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Task task = mDatabase.child(Constants.KEY_STATUS).setValue(Constants.KEY_ACCEPTED);
-                if(task.isSuccessful()){
-                    Helper.showToast(getContext(), getResources().getString(R.string.accept_successeful));
-                }else{
-                    Helper.showToast(getContext(), getResources().getString(R.string.setting_error));
-                }
+                Task task = mDatabase.child(key).child(Constants.KEY_STATUS).setValue(Constants.KEY_ACCEPTED);
+                Intent intent = new Intent();
+                getActivity().setResult(Activity.RESULT_OK, intent);
+                getActivity().finish();
+//                if(task.isSuccessful()){
+//                }
             }
 
             @Override
@@ -71,14 +82,5 @@ public class AcceptDeclineFragment extends Fragment implements View.OnClickListe
 
             }
         });
-    }
-
-    private void acceptedRequest(String key) {
-        Task task = mDatabase.child(key).removeValue();
-        if(task.isSuccessful()){
-            Helper.showToast(getContext(), getResources().getString(R.string.decline_done));
-        }else{
-            Helper.showToast(getContext(), getResources().getString(R.string.setting_error));
-        }
     }
 }

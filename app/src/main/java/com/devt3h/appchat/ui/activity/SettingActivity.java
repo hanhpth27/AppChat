@@ -1,5 +1,6 @@
 package com.devt3h.appchat.ui.activity;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -8,12 +9,16 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.devt3h.appchat.R;
 import com.devt3h.appchat.helper.Constants;
 import com.devt3h.appchat.helper.Helper;
+import com.devt3h.appchat.model.AccountUser;
 import com.devt3h.appchat.model.User;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -37,14 +42,16 @@ import java.util.Set;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class SettingActivity extends AppCompatActivity{
-    private final static int GALLERY_PICK = 1;
+public class SettingActivity extends AppCompatActivity implements View.OnClickListener {
+    private final static int AVATAR_GALLERY_PICK = 1;
+    private final static int COVER_GALLERY_PICK = 2;
 
     private CircleImageView imgAvatar;
-    private EditText edtUsername, edtEmail, edtPassword;
+    private ImageView imgCover;
+    private EditText edtUsername, edtEmail, edtPassword, edtStatus;
     private Button btnChange;
     private Toolbar toolbar;
-    private Uri linkIAvartar;
+    private Uri linkIAvartar, linkICover;
 
     private FirebaseAuth mAuth;
     private DatabaseReference databaseReference;
@@ -56,7 +63,7 @@ public class SettingActivity extends AppCompatActivity{
         setContentView(R.layout.activity_setting);
 
         inits();
-        sReference = FirebaseStorage.getInstance().getReference().child(Constants.STG_IMAGE);
+        sReference = FirebaseStorage.getInstance().getReference();
         firebaseUser = mAuth.getCurrentUser();
         String userId = firebaseUser.getUid();
         //edtEmail.setHint(firebaseUser.getEmail());
@@ -64,13 +71,23 @@ public class SettingActivity extends AppCompatActivity{
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                User user = dataSnapshot.getValue(User.class);
+                AccountUser user = dataSnapshot.getValue(AccountUser.class);
                 if(!user.getAvatarURL().equals(Constants.KEY_DEFAULT)){
                     String url = user.getAvatarURL();
                     Picasso.get().load(url)
-                            .resize(250, 250)
                             .centerCrop()
+                            .resize(getResources().getDimensionPixelSize(R.dimen.size_image),
+                                    getResources().getDimensionPixelSize(R.dimen.size_image))
                             .into(imgAvatar);
+                }
+
+                if(!user.getCoverURL().equals(Constants.KEY_DEFAULT)){
+                    String url = user.getCoverURL();
+                    Picasso.get().load(url)
+                            .centerCrop()
+                            .resize(getResources().getDimensionPixelSize(R.dimen.size_image_cover),
+                                    getResources().getDimensionPixelSize(R.dimen.size_image_cover))
+                            .into(imgCover);
                 }
             }
 
@@ -80,79 +97,102 @@ public class SettingActivity extends AppCompatActivity{
             }
         });
 
-        btnChange.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String newUserName = edtUsername.getText().toString();
-                String newEmail = edtEmail.getText().toString();
-                String newPassword = edtPassword.getText().toString();
+        btnChange.setOnClickListener(view->{
+            String newUserName = edtUsername.getText().toString();
+            String newEmail = edtEmail.getText().toString();
+            String newPassword = edtPassword.getText().toString();
+            String newStatus = edtStatus.getText().toString();
 
-                if(!newPassword.isEmpty() && newPassword.length() < 6){
-                    Helper.showToast(SettingActivity.this,"Mật khẩu mới phải lớn hơn 6 ký tự");
-                }else {
-                    changeProfile(newUserName,newEmail,newPassword, linkIAvartar);
-                    finish();
-                }
+            if(!newPassword.isEmpty() && newPassword.length() < 6){
+                Helper.showToast(SettingActivity.this,"Mật khẩu mới phải lớn hơn 6 ký tự");
+            }else {
+                dialogConformChange(newUserName,newPassword, newEmail, linkIAvartar, linkICover, newStatus);
+               // changeProfile(newUserName ,newEmail,newPassword, linkIAvartar, linkICover, newStatus);
             }
         });
 
-        imgAvatar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent galleryIntent = new Intent();
-                galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
-                galleryIntent.setType("image/*");
-                startActivityForResult(galleryIntent, GALLERY_PICK);
-
-//                CropImage.activity()
-//                        .setGuidelines(CropImageView.Guidelines.ON)
-//                        .setAspectRatio(1, 1)
-//                        .start(CropImageActivity.this);
-            }
-        });
+        imgAvatar.setOnClickListener(this);
+        imgCover.setOnClickListener(this);
     }
 
-    private void changeProfile(String newUserName, String newEmail, String newPassword, Uri linkIAvartar) {
+
+    private void dialogConformChange(String newUserName,String newPassword, String newEmail, Uri linkIAvartar, Uri linkICover, String newStatus) {
+        final Dialog dialog = new Dialog(this);
+
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_conform_change_profile);
+        dialog.setCanceledOnTouchOutside(false);
+
+        Button btnConform = dialog.findViewById(R.id.btn_submit);
+        Button btnCancel = dialog.findViewById(R.id.btn_cancel);
+        btnCancel.setOnClickListener(view -> {
+            dialog.dismiss();
+        });
+
+        btnConform.setOnClickListener(view ->{
+            changeProfile(newUserName ,newEmail,newPassword, linkIAvartar, linkICover, newStatus);
+            Helper.showToast(this, getResources().getString(R.string.setting_successeful));
+            dialog.dismiss();
+        });
+        if(!newUserName.isEmpty() || !newPassword.isEmpty() || !newEmail.isEmpty() || !newStatus.isEmpty()
+                || linkIAvartar!=null || linkICover!=null){
+            dialog.show();
+        }else {
+            Helper.showToast(this, getResources().getString(R.string.not_change));
+        }
+    }
+
+    private void changeProfile(String newUserName, String newEmail, String newPassword, Uri linkIAvatar, Uri linkICover, String status) {
+        String userId = firebaseUser.getUid();
         if(!newEmail.isEmpty())  firebaseUser.updateEmail(newEmail);
         if(!newPassword.isEmpty()) firebaseUser.updatePassword(newPassword);
-        if(linkIAvartar!=null){
-             String userId = firebaseUser.getUid();
-                final StorageReference filePath = sReference.child(userId +".jpg");
 
-            UploadTask uploadTask = filePath.putFile(linkIAvartar);
-            Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                @Override
-                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                    return filePath.getDownloadUrl();
-                }
-            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                @Override
-                public void onComplete(@NonNull Task<Uri> task) {
-                    if (task.isSuccessful()) {
-                        Uri downloadUri = task.getResult();
-                        databaseReference.child(Constants.KEY_AVATAR_URL).setValue(downloadUri.toString());
-                        Helper.showToast(SettingActivity.this, getResources().getString(R.string.setting_successeful));
-                    } else {
-                        // Handle failures
-                        // ...
-                        Helper.showToast(SettingActivity.this, getResources().getString(R.string.setting_error));
-                    }
-                }
-            });
+        if(linkIAvatar!=null){
+            StorageReference filePathAvatar = sReference.child(Constants.STG_IMAGE).child(userId +".jpg");
+            loadImg(filePathAvatar, Constants.KEY_AVATAR_URL, linkIAvatar);
+        }
+
+        if(linkICover!=null){
+            StorageReference filePathCover = sReference.child(Constants.STG_COVER).child(userId +".jpg");
+            loadImg(filePathCover, Constants.KEY_COVER_URL, linkICover);
         }
 
         if(!newUserName.isEmpty()) databaseReference.child(Constants.KEY_USER_NAME).setValue(newUserName);
+        if(!status.isEmpty()) databaseReference.child(Constants.KEY_STATUS).setValue(status);
+    }
 
+    private void loadImg(StorageReference filePath, String key, Uri linkImg){
+        UploadTask uploadTask = filePath.putFile(linkImg);
+        Task<Uri> urlTask = uploadTask.continueWithTask(task -> filePath.getDownloadUrl()).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Uri downloadUri = task.getResult();
+                databaseReference.child(key).setValue(downloadUri.toString());
+                //Helper.showToast(SettingActivity.this, getResources().getString(R.string.setting_successeful));
+            } else {
+                // Handle failures
+                // ...
+                Helper.showToast(SettingActivity.this, getResources().getString(R.string.setting_error));
+            }
+        });
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(resultCode==RESULT_OK && requestCode == GALLERY_PICK){
-            CropImage.activity(data.getData())
-                    .start(this);
+        if(resultCode==RESULT_OK && data!=null){
+            switch (requestCode){
+                case AVATAR_GALLERY_PICK:
+                    CropImage.activity(data.getData())
+                            .start(this);
+                    break;
+                case COVER_GALLERY_PICK:
+                    linkICover = data.getData();
+                    imgCover.setImageURI(linkICover);
+                    break;
+            }
         }
+
 
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
@@ -172,6 +212,8 @@ public class SettingActivity extends AppCompatActivity{
         edtEmail = findViewById(R.id.edt_email);
         edtPassword = findViewById(R.id.edt_password);
         btnChange = findViewById(R.id.btn_change_profile);
+        imgCover = findViewById(R.id.img_cover);
+        edtStatus = findViewById(R.id.edt_status);
 
         toolbar = findViewById(R.id.setting_account);
         setSupportActionBar(toolbar);
@@ -181,5 +223,32 @@ public class SettingActivity extends AppCompatActivity{
 
         mAuth = FirebaseAuth.getInstance();
 
+    }
+
+    @Override
+    public void onClick(View view) {
+        int id = view.getId();
+        switch (id){
+            case R.id.img_avatar:
+                Intent avatarIntent = new Intent();
+                avatarIntent.setAction(Intent.ACTION_GET_CONTENT);
+                avatarIntent.setType("image/*");
+                startActivityForResult(avatarIntent, AVATAR_GALLERY_PICK);
+                break;
+            case R.id.img_cover:
+                Intent coverIntent = new Intent();
+                coverIntent.setAction(Intent.ACTION_GET_CONTENT);
+                coverIntent.setType("image/*");
+                startActivityForResult(coverIntent, COVER_GALLERY_PICK);
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 }

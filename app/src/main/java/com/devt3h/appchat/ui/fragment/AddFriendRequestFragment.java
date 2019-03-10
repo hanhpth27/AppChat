@@ -1,5 +1,6 @@
 package com.devt3h.appchat.ui.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,6 +18,7 @@ import com.devt3h.appchat.helper.Constants;
 import com.devt3h.appchat.helper.Helper;
 import com.devt3h.appchat.model.Friend;
 import com.devt3h.appchat.model.User;
+import com.devt3h.appchat.ui.activity.DetailUserActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -29,7 +31,10 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.app.Activity.RESULT_OK;
+
 public class AddFriendRequestFragment extends Fragment {
+    public static final int DETAIL_USER = 1;
     private RequestFriendAdapter userAdapter;
     private List<User> requestFriendList;
     private List<String> listId;
@@ -123,6 +128,14 @@ public class AddFriendRequestFragment extends Fragment {
                     public void declineRequestFriend(int position) {
                         declineRequest(position);
                         Helper.showToast(getContext(), getResources().getString(R.string.decline_done));
+                    }
+
+                    @Override
+                    public void showDetailUser(int position) {
+                        String user_id = requestFriendList.get(position).getId();
+                        Intent iDetailUser = new Intent(getActivity(), DetailUserActivity.class);
+                        iDetailUser.putExtra(Constants.KEY_VISIT_USER_ID, user_id );
+                        startActivityForResult(iDetailUser, DETAIL_USER);
                     }
                 });
 
@@ -222,5 +235,15 @@ public class AddFriendRequestFragment extends Fragment {
 
             }
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode==RESULT_OK && requestCode==DETAIL_USER){
+            userAdapter.notifyDataSetChanged();
+            requestFriendList.clear();
+            readRequestFriend();
+        }
     }
 }

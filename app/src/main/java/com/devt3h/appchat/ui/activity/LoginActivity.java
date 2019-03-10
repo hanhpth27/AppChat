@@ -1,5 +1,6 @@
 package com.devt3h.appchat.ui.activity;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +9,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -58,10 +61,42 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 openRegisterActivity();
                 break;
             case R.id.btn_forgot_password:
+                resetPassword();
                 break;
             default:
                 break;
         }
+    }
+
+    private void resetPassword() {
+        final Dialog dialog = new Dialog(this, R.style.Theme_Dialog);
+
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_reset_password);
+        getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT);
+
+        dialog.setCanceledOnTouchOutside(true);
+
+        EditText edtEmail = dialog.findViewById(R.id.edt_email);
+        Button btnConform = dialog.findViewById(R.id.btn_submit);
+        btnConform.setOnClickListener(view -> {
+            String email = edtEmail.getText().toString();
+            if(email.isEmpty()){
+                Helper.showToast(this, "Please enter your email");
+            }else{
+                mAuth.sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isSuccessful()){
+                            Helper.showToast(LoginActivity.this, "Check email to reset your password!");
+                        }else {
+                            Helper.showToast(LoginActivity.this, "Fail to send reset password email!");
+                        }
+                    }
+                });
+            }
+        });
+        dialog.show();
     }
 
     private void openRegisterActivity() {

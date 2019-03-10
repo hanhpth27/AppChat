@@ -22,4 +22,5 @@
     <string name="decline_done">Đã xóa</string>
     <string name="unfriend_done">Đã hủy kết bạn</string>
     <string name="send_request_done">Bạn đã gửi lời mời kết bạn</string>
+    <string name="request_status">Cập nhật status của bạn</string>
 </resources>

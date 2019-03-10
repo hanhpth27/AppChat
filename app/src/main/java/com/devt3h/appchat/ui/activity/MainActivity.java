@@ -1,28 +1,40 @@
 package com.devt3h.appchat.ui.activity;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.devt3h.appchat.R;
 import com.devt3h.appchat.adapter.ViewPagerAdapter;
+import com.devt3h.appchat.ui.fragment.AccountFragment;
 import com.devt3h.appchat.ui.fragment.AddFriendRequestFragment;
 import com.devt3h.appchat.ui.fragment.ChatsFragment;
 import com.devt3h.appchat.ui.fragment.FriendsFragment;
+import com.devt3h.appchat.ui.fragment.NewsFeedFragment;
+import com.devt3h.appchat.ui.fragment.NotificationFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
+    public static final int OPEN_CAMERA = 1;
     private FirebaseAuth mAuth;
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
+    private EditText edtSearch;
+    private ImageView imgCamera, imgLogout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -37,28 +49,119 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }
         inits();
+        imgLogout.setOnClickListener(view -> {
+            logOutUser();
+        });
+
+        imgCamera.setOnClickListener(view -> {
+            Intent iCamera = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+            startActivityForResult(iCamera, OPEN_CAMERA);
+        });
+
+        //showActivitySearch();
+    }
+
+    private void showActivitySearch() {
+        edtSearch.setOnKeyListener((v, keyCode, event) -> {
+            // If the event is a key-down event on the "enter" button
+            if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+                    (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                Intent searchIntent = new Intent(MainActivity.this, FindFriendActivity.class);
+                startActivity(searchIntent);
+                return true;
+            }
+            return false;
+        });
     }
 
     private void inits() {
-        toolbar = findViewById(R.id.main_app_bar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("AppChat");
+//        toolbar = findViewById(R.id.main_app_bar);
+//        setSupportActionBar(toolbar);
 
         tabLayout = findViewById(R.id.tab_layout);
         viewPager = findViewById(R.id.view_pager);
+        edtSearch = findViewById(R.id.btn_search);
+        imgCamera = findViewById(R.id.img_camera);
+        imgLogout = findViewById(R.id.img_logout);
 
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
-        viewPagerAdapter.addFragment(new AddFriendRequestFragment(),"Friend Request");
-        viewPagerAdapter.addFragment(new ChatsFragment(),"Chat");
-        viewPagerAdapter.addFragment(new FriendsFragment(),"Friend");
+        viewPagerAdapter.addFragment(new NewsFeedFragment());
+        viewPagerAdapter.addFragment(new AddFriendRequestFragment());
+        viewPagerAdapter.addFragment(new ChatsFragment());
+        viewPagerAdapter.addFragment(new NotificationFragment());
+        viewPagerAdapter.addFragment(new AccountFragment());
+//        viewPagerAdapter.addFragment(new FriendsFragment());
 
         viewPager.setAdapter(viewPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
-        tabLayout.getTabAt(1).select();
-
-
+        initTabLayout();
     }
 
+    private void initTabLayout(){
+        tabLayout.getTabAt(0).setIcon(R.drawable.ic_newsfeed_selected);
+        tabLayout.getTabAt(1).setIcon(R.drawable.ic_friend);
+        tabLayout.getTabAt(2).setIcon(R.drawable.ic_mess);
+        tabLayout.getTabAt(3).setIcon(R.drawable.ic_notification);
+        tabLayout.getTabAt(4).setIcon(R.drawable.ic_account);
+
+        tabLayout.setSelectedTabIndicatorColor(Color.parseColor("#ffffff"));
+
+        tabLayout.getTabAt(0).select();
+        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                int position = tab.getPosition();
+                switch (position){
+                    case 0:
+                        tab.setIcon(R.drawable.ic_newsfeed_selected);
+                        break;
+                    case 1:
+                        tab.setIcon(R.drawable.ic_friend_selected);
+                        break;
+                    case 2:
+                        tab.setIcon(R.drawable.ic_mess_selected);
+                        break;
+                    case 3:
+                        tab.setIcon(R.drawable.ic_notification_selected);
+                        break;
+                    case 4:
+                        tab.setIcon(R.drawable.ic_account_selected);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                int position = tab.getPosition();
+                switch (position){
+                    case 0:
+                        tab.setIcon(R.drawable.ic_newsfeed);
+                        break;
+                    case 1:
+                        tab.setIcon(R.drawable.ic_friend);
+                        break;
+                    case 2:
+                        tab.setIcon(R.drawable.ic_mess);
+                        break;
+                    case 3:
+                        tab.setIcon(R.drawable.ic_notification);
+                        break;
+                    case 4:
+                        tab.setIcon(R.drawable.ic_account);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+    }
     @Override
     protected void onStart() {
         super.onStart();
@@ -84,14 +187,6 @@ public class MainActivity extends AppCompatActivity {
             case R.id.btn_log_out:
                 mAuth.signOut();
                 logOutUser();
-                break;
-            case R.id.btn_setting:
-                Intent intent = new Intent(MainActivity.this, SettingActivity.class);
-                startActivity(intent);
-                break;
-            case R.id.btn_find_friend:
-                Intent intent1 = new Intent(MainActivity.this, FindFriendActivity.class);
-                startActivity(intent1);
                 break;
             default:
                 break;

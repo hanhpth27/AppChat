@@ -8,9 +8,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.MultiAutoCompleteTextView;
 
 import com.devt3h.appchat.R;
 import com.devt3h.appchat.adapter.UserAdapter;
@@ -32,7 +34,7 @@ public class FindFriendActivity extends AppCompatActivity {
     private RecyclerView rvUser;
     private List<User> userList;
     private Toolbar toolbar;
-    private EditText edtKey;
+    private MultiAutoCompleteTextView edtKey;
     private ImageView imgSearch;
 
     private DatabaseReference mDatabase;
