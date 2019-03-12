@@ -3,6 +3,7 @@ package com.devt3h.appchat.ui.activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +20,7 @@ import com.devt3h.appchat.model.AccountUser;
 import com.devt3h.appchat.model.Friend;
 import com.devt3h.appchat.model.User;
 import com.devt3h.appchat.ui.fragment.AcceptDeclineFragment;
+import com.devt3h.appchat.ui.fragment.SendMessageFragment;
 import com.devt3h.appchat.ui.fragment.SendRequestFragment;
 import com.devt3h.appchat.ui.fragment.UnfriendFragment;
 import com.google.firebase.auth.FirebaseAuth;
@@ -129,6 +131,13 @@ public class DetailUserActivity extends AppCompatActivity {
 
                 }
             });
+            SendMessageFragment sendMessageFragment = new SendMessageFragment();
+            FragmentTransaction transaction = manager.beginTransaction();
+            Bundle bundle = new Bundle();
+            bundle.putString("user_id",user_id);
+            sendMessageFragment.setArguments(bundle);
+            transaction.add(R.id.fl_send_message,sendMessageFragment,SendMessageFragment.class.getName());
+            transaction.commit();
         }else {
             Intent intent = new Intent(DetailUserActivity.this, SettingActivity.class);
             startActivity(intent);
@@ -146,6 +155,9 @@ public class DetailUserActivity extends AppCompatActivity {
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
         userCurrentId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+
+
     }
 
     public void getFragment(String currentState, String key) {

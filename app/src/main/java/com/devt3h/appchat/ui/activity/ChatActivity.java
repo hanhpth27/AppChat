@@ -137,6 +137,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                         listChat.add(chat);
                     }
                 }
+
                 messageAdapter = new MessageAdapter(new MessageAdapter.IMessage() {
                     @Override
                     public int getCount() {
@@ -154,6 +155,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 });
                 rvMessage.setAdapter(messageAdapter);
+
             }
 
             @Override

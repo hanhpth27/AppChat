@@ -32,7 +32,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     public MessageViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         context = viewGroup.getContext();
         View view;
-        if(getItemViewType(i) == Constants.TYPE_MESSAGE_LEFT) {
+        if(i == Constants.TYPE_MESSAGE_LEFT) {
             view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_message_left, viewGroup, false);
         } else {
             view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_message_right,viewGroup,false);
@@ -77,7 +77,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     @Override
     public int getItemViewType(int position) {
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        if(iMessage.getChat(position).getSender_id().equals(currentUser.getUid()))
+        if((currentUser.getUid()).equals(iMessage.getChat(position).getSender_id()))
             return Constants.TYPE_MESSAGE_RIGHT;
         else
             return Constants.TYPE_MESSAGE_LEFT;
