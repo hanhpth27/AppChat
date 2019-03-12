@@ -49,6 +49,7 @@ public class SendRequestFragment extends Fragment implements View.OnClickListene
         friend.setSender_id(mAuth.getUid());
         friend.setReceiver_id(userId);
         friend.setStatus(Constants.KEY_PENDING);
+        friend.setStatus(Constants.KEY_DEFAULT);
         Task task = mDatabasae.push().setValue(friend);
 
         if(task.isSuccessful()){

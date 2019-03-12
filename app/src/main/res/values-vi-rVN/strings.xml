@@ -23,4 +23,6 @@
     <string name="unfriend_done">Đã hủy kết bạn</string>
     <string name="send_request_done">Bạn đã gửi lời mời kết bạn</string>
     <string name="request_status">Cập nhật status của bạn</string>
+    <string name="conform_change_profile">Bạn chắc chắn thay đổi?</string>
+    <string name="conform_log_out">Bạn chắc chắn đăng xuất?</string>
 </resources>

@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.devt3h.appchat.R;
 import com.devt3h.appchat.helper.Constants;
+import com.devt3h.appchat.helper.Helper;
 import com.devt3h.appchat.model.AccountUser;
 import com.devt3h.appchat.model.Friend;
 import com.devt3h.appchat.ui.activity.SettingActivity;

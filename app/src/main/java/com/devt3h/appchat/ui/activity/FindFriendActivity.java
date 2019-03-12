@@ -7,16 +7,24 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.MultiAutoCompleteTextView;
+import android.widget.Space;
 
 import com.devt3h.appchat.R;
 import com.devt3h.appchat.adapter.UserAdapter;
 import com.devt3h.appchat.helper.Constants;
+import com.devt3h.appchat.helper.SpaceTokenizer;
+import com.devt3h.appchat.model.AccountUser;
 import com.devt3h.appchat.model.User;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -30,12 +38,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FindFriendActivity extends AppCompatActivity {
-    private UserAdapter adapter;
+    private UserAdapter adapterUser;
     private RecyclerView rvUser;
-    private List<User> userList;
-    private Toolbar toolbar;
+    private List<AccountUser> userList;
+    private List<String> sUserName;
     private MultiAutoCompleteTextView edtKey;
-    private ImageView imgSearch;
 
     private DatabaseReference mDatabase;
     @Override
@@ -44,31 +51,110 @@ public class FindFriendActivity extends AppCompatActivity {
         setContentView(R.layout.activity_find_friend);
 
         inits();
+        edtKey.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-        imgSearch.setOnClickListener(new View.OnClickListener() {
+            }
 
             @Override
-            public void onClick(View view) {
-                String key = edtKey.getText().toString();
-                searchFriend(key);
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                String key = charSequence.toString();
+                Query query = mDatabase.orderByChild(Constants.KEY_USER_NAME);
+                query.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        userList.clear();
+                        sUserName.clear();
+                        for (DataSnapshot task : dataSnapshot.getChildren()) {
+                            AccountUser user = task.getValue(AccountUser.class);
+                            if ( user.getName() != null && user.getName().toLowerCase().contains(key.toLowerCase())){
+                                userList.add(user);
+                            }
+                        }
+//
+                        if(rvUser.getAdapter() == null){
+                            adapterUser = new UserAdapter(new UserAdapter.IUser() {
+                                @Override
+                                public int getCount() {
+                                    if (userList== null) return 0;
+                                    return userList.size();
+                                }
+
+                                @Override
+                                public AccountUser getUser(int position) {
+                                    return userList.get(position);
+                                }
+                            }, false);
+
+                            rvUser.setAdapter(adapterUser);
+                        }else {
+                            rvUser.getAdapter().notifyDataSetChanged();
+                        }
+                        //showCompleteStart(sUserName, userList);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        edtKey.setOnKeyListener((v, keyCode, event)->{
+            if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+                    (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                searchFriend(edtKey.getText().toString());
+                return true;
+            }
+            return false;
+        });
+    }
+
+    private void showCompleteStart(List<String> sUserName, List<AccountUser> userList) {
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line,
+                sUserName);
+        edtKey.setTokenizer(new SpaceTokenizer());
+        edtKey.setAdapter(adapter);
+        edtKey.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                AccountUser accountUser = new AccountUser();
+                accountUser = userList.get(i);
+                userList.clear();
+                userList.add(accountUser);
+                adapterUser = new UserAdapter(new UserAdapter.IUser(){
+                    @Override
+                    public int getCount() {
+                        return 1;
+                    }
+
+                    @Override
+                    public AccountUser getUser(int position) {
+                        return userList.get(position);
+                    }
+                }, false);
+                rvUser.setAdapter(adapterUser);
             }
         });
     }
 
     private void inits() {
         edtKey = findViewById(R.id.edt_key);
-        imgSearch = findViewById(R.id.btn_search);
 
         rvUser = findViewById(R.id.rv_find_user);
         rvUser.setLayoutManager(new LinearLayoutManager(this));
 
-        toolbar = findViewById(R.id.toolbar_friend);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(getResources().getString(R.string.find_friend_title));
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mDatabase = FirebaseDatabase.getInstance().getReference(Constants.ARG_USERS);
         userList = new ArrayList<>();
+        sUserName = new ArrayList<>();
     }
 
     private void searchFriend(final String key){
@@ -78,14 +164,14 @@ public class FindFriendActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 userList.clear();
                 for (DataSnapshot task : dataSnapshot.getChildren()) {
-                    User user = task.getValue(User.class);
+                    AccountUser user = task.getValue(AccountUser.class);
                     if ( user.getName() != null && user.getName().toLowerCase().contains(key.toLowerCase())){
                         userList.add(user);
                     }
 
                 }
                 if(rvUser.getAdapter() == null){
-                    adapter = new UserAdapter(new UserAdapter.IUser() {
+                    adapterUser = new UserAdapter(new UserAdapter.IUser() {
                         @Override
                         public int getCount() {
                             if (userList== null) return 0;
@@ -93,12 +179,12 @@ public class FindFriendActivity extends AppCompatActivity {
                         }
 
                         @Override
-                        public User getUser(int position) {
+                        public AccountUser getUser(int position) {
                             return userList.get(position);
                         }
                     }, false);
 
-                    rvUser.setAdapter(adapter);
+                    rvUser.setAdapter(adapterUser);
                 }else {
                     rvUser.getAdapter().notifyDataSetChanged();
                 }
@@ -109,50 +195,6 @@ public class FindFriendActivity extends AppCompatActivity {
 
             }
         });
-//        query.addChildEventListener(new ChildEventListener() {
-//            @Override
-//            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-//                userList.clear();
-//                if (adapter!=null) adapter.notifyDataSetChanged();
-//                User user = dataSnapshot.getValue(User.class);
-//                if(user!=null) userList.add(user);
-//
-//                adapter = new UserAdapter(new UserAdapter.IUser() {
-//                    @Override
-//                    public int getCount() {
-//                        if (userList== null) return 0;
-//                        return userList.size();
-//                    }
-//
-//                    @Override
-//                    public User getUser(int position) {
-//                        return userList.get(position);
-//                    }
-//                });
-//
-//                rvUser.setAdapter(adapter);
-//            }
-//
-//            @Override
-//            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-//
-//            }
-//
-//            @Override
-//            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-//
-//            }
-//
-//            @Override
-//            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
     }
 
     private void searchUser(String key){
@@ -161,11 +203,11 @@ public class FindFriendActivity extends AppCompatActivity {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 userList.clear();
-                if (adapter!=null) adapter.notifyDataSetChanged();
-                User user = dataSnapshot.getValue(User.class);
+                if (adapterUser!=null) adapterUser.notifyDataSetChanged();
+                AccountUser user = dataSnapshot.getValue(AccountUser.class);
                 if(user!=null) userList.add(user);
 
-                adapter = new UserAdapter(new UserAdapter.IUser() {
+                adapterUser = new UserAdapter(new UserAdapter.IUser() {
                     @Override
                     public int getCount() {
                         if (userList== null) return 0;
@@ -173,12 +215,12 @@ public class FindFriendActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public User getUser(int position) {
+                    public AccountUser getUser(int position) {
                         return userList.get(position);
                     }
                 }, false);
 
-                rvUser.setAdapter(adapter);
+                rvUser.setAdapter(adapterUser);
             }
 
             @Override

@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.devt3h.appchat.R;
 import com.devt3h.appchat.helper.Constants;
+import com.devt3h.appchat.model.AccountUser;
 import com.devt3h.appchat.model.User;
 import com.devt3h.appchat.ui.activity.DetailUserActivity;
 import com.devt3h.appchat.ui.activity.ChatActivity;
@@ -39,7 +40,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder>{
 
     @Override
     public void onBindViewHolder(@NonNull final UserHolder userHolder, int position) {
-        final User user = iUser.getUser(position);
+
+        final AccountUser user = iUser.getUser(position);
         userHolder.tvUsername.setText(user.getName());
         userHolder.tvBirthday.setText(user.getBirthday());
         String url = user.getAvatarURL();
@@ -93,6 +95,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder>{
 
     public interface IUser{
         int getCount();
-        User getUser(int position);
+        AccountUser getUser(int position);
     }
 }

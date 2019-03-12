@@ -38,6 +38,8 @@ public class AddFriendRequestFragment extends Fragment {
     private RequestFriendAdapter userAdapter;
     private List<User> requestFriendList;
     private List<String> listId;
+    private String key;
+    private String userId;
     private RecyclerView rvRequestFriend;
     private DatabaseReference databaseReference;
     @Nullable
@@ -50,6 +52,7 @@ public class AddFriendRequestFragment extends Fragment {
 
         requestFriendList = new ArrayList<>();
         listId = new ArrayList<>();
+        userId = FirebaseAuth.getInstance().getUid();
 
         readRequestFriend();
         return v;
@@ -57,8 +60,6 @@ public class AddFriendRequestFragment extends Fragment {
 
     private void readRequestFriend() {
         databaseReference = FirebaseDatabase.getInstance().getReference();
-        final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        final String userId = firebaseUser.getUid();
 
         databaseReference.child(Constants.ARG_FRIENDS).addChildEventListener(new ChildEventListener() {
             @Override
@@ -245,5 +246,37 @@ public class AddFriendRequestFragment extends Fragment {
             requestFriendList.clear();
             readRequestFriend();
         }
+    }
+
+    private void changeIsSee(){
+        databaseReference.child(Constants.ARG_FRIENDS).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                Friend friend = dataSnapshot.getValue(Friend.class);
+                if(friend.getReceiver_id().equals(userId)){
+                    databaseReference.child(Constants.ARG_FRIENDS).child(dataSnapshot.getKey()).child("is_see").setValue("seen");
+                }
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 }

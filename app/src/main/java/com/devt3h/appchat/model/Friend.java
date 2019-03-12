@@ -4,6 +4,7 @@ public class Friend {
     private String receiver_id;
     private String sender_id;
     private String status;
+    private String is_see;
 
     public Friend() {
     }
@@ -30,5 +31,13 @@ public class Friend {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getIs_see() {
+        return is_see;
+    }
+
+    public void setIs_see(String is_see) {
+        this.is_see = is_see;
     }
 }

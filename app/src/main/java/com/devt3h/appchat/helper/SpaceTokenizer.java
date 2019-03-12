@@ -1,4 +1,4 @@
-package com.example.vanhieu.demoopenstreetmap;
+package com.devt3h.appchat.helper;
 
 import android.text.SpannableString;
 import android.text.Spanned;

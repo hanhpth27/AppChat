@@ -17,6 +17,7 @@
     <string name="setting_error">Error occured</string>
     <string name="setting_title">Setting profile</string>
     <string name="find_friend_title">Find Friend</string>
+    <string name="notification_add_friend">You receive a request friend</string>
 
     <string name="send_request_frienf">Send Request Friend</string>
     <string name="search">Search</string>
@@ -29,6 +30,7 @@
     <string name="unfriend_done">You unfriend done!</string>
     <string name="send_request_done">You sent request to friend</string>
     <string name="conform_change_profile">Are you sure change your profile?</string>
+    <string name="conform_log_out">Are you sure log out?</string>
 
     <string name="type_message">Type message ..</string>
     <string name="request_status">Please update your status</string>

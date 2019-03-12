@@ -31,7 +31,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 public class DetailUserActivity extends AppCompatActivity {
-    //private Button btnRequest, btnDeline;
     private TextView tvUsername, tvBirthday;
     private ImageView imgAvatar, imgCover;
 
@@ -53,37 +52,37 @@ public class DetailUserActivity extends AppCompatActivity {
 
         inits();
 
-        databaseReference.child(Constants.ARG_USERS).child(user_id).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                AccountUser user = dataSnapshot.getValue(AccountUser.class);
-                if(user!=null){
-                    tvUsername.setText(user.getName());
-                    tvBirthday.setText(user.getBirthday());
-                    if(!user.getAvatarURL().equals(Constants.KEY_DEFAULT)){
-                        Picasso.get().load(user.getAvatarURL())
-                                .resize(getResources().getDimensionPixelSize(R.dimen.size_image),
-                                        getResources().getDimensionPixelSize(R.dimen.size_image))
-                                .centerCrop()
-                                .into(imgAvatar);
-                    }
-
-                    if(!user.getCoverURL().equals(Constants.KEY_DEFAULT)){
-                        Picasso.get().load(user.getCoverURL())
-                                .resize(250, 250)
-                                .centerCrop()
-                                .into(imgCover);
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
 
         if(!user_id.equals(userCurrentId)){
+            databaseReference.child(Constants.ARG_USERS).child(user_id).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    AccountUser user = dataSnapshot.getValue(AccountUser.class);
+                    if(user!=null){
+                        tvUsername.setText(user.getName());
+                        tvBirthday.setText(user.getBirthday());
+                        if(!user.getAvatarURL().equals(Constants.KEY_DEFAULT)){
+                            Picasso.get().load(user.getAvatarURL())
+                                    .resize(getResources().getDimensionPixelSize(R.dimen.size_image),
+                                            getResources().getDimensionPixelSize(R.dimen.size_image))
+                                    .centerCrop()
+                                    .into(imgAvatar);
+                        }
+
+                        if(!user.getCoverURL().equals(Constants.KEY_DEFAULT)){
+                            Picasso.get().load(user.getCoverURL())
+                                    .resize(250, 250)
+                                    .centerCrop()
+                                    .into(imgCover);
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
             databaseReference.child(Constants.ARG_FRIENDS).addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -138,8 +137,6 @@ public class DetailUserActivity extends AppCompatActivity {
     }
 
     private void inits() {
-        //btnRequest = findViewById(R.id.btn_send_request);
-        //btnDeline = findViewById(R.id.btn_decline_request);
         tvUsername = findViewById(R.id.tv_username);
         tvBirthday = findViewById(R.id.tv_birthday);
         imgAvatar = findViewById(R.id.img_avatar);
@@ -164,13 +161,14 @@ public class DetailUserActivity extends AppCompatActivity {
             case Constants.ACCEPTED:
                 UnfriendFragment unfriendFragment = new UnfriendFragment();
                 unfriendFragment.setArguments(bundle);
-                transaction.add(R.id.fl_content_button, unfriendFragment, UnfriendFragment.class.getName());
+                //transaction.add(R.id.fl_content_button, unfriendFragment, UnfriendFragment.class.getName());
+                transaction.replace(R.id.fl_content_button, unfriendFragment, UnfriendFragment.class.getName());
                 transaction.commit();
                 break;
             case Constants.YOU_RECEIVE_REQUEST:
                 AcceptDeclineFragment acceptDeclineFragment = new AcceptDeclineFragment();
                 acceptDeclineFragment.setArguments(bundle);
-                transaction.add(R.id.fl_content_button, acceptDeclineFragment, AcceptDeclineFragment.class.getName());
+                transaction.replace(R.id.fl_content_button, acceptDeclineFragment, AcceptDeclineFragment.class.getName());
                 transaction.commit();
                 break;
             case Constants.YOU_REQUEST_FRIEND:
@@ -182,9 +180,8 @@ public class DetailUserActivity extends AppCompatActivity {
                 transaction.add(R.id.fl_content_button, sendRequestFragment, SendRequestFragment.class.getName());
                 transaction.commit();
                 break;
-                default:
-                    break;
+            default:
+                break;
         }
-
     }
 }

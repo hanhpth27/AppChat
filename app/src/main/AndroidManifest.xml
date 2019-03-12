@@ -36,7 +36,7 @@
         <activity
             android:name=".ui.activity.ChatActivity"
             android:parentActivityName=".ui.activity.MainActivity" />
-        <activity android:name=".ui.activity.ResetPassword"></activity>
+        <service android:name=".service.NotificationRequestFriend"/>
     </application>
 
 </manifest>

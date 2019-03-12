@@ -1,9 +1,14 @@
 package com.devt3h.appchat.ui.activity;
 
+import android.app.Dialog;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.media.Image;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -12,12 +17,16 @@ import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.devt3h.appchat.R;
 import com.devt3h.appchat.adapter.ViewPagerAdapter;
+import com.devt3h.appchat.service.NotificationRequestFriend;
 import com.devt3h.appchat.ui.fragment.AccountFragment;
 import com.devt3h.appchat.ui.fragment.AddFriendRequestFragment;
 import com.devt3h.appchat.ui.fragment.ChatsFragment;
@@ -30,17 +39,19 @@ import com.google.firebase.auth.FirebaseUser;
 public class MainActivity extends AppCompatActivity {
     public static final int OPEN_CAMERA = 1;
     private FirebaseAuth mAuth;
-    private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private EditText edtSearch;
     private ImageView imgCamera, imgLogout;
+    private NotificationRequestFriend notificationService;
+    private ServiceConnection conn;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser == null) {
@@ -48,7 +59,59 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
+
+        startStartCommand();
         inits();
+        initConnect();
+    }
+    private void startStartCommand() {
+        Intent intent = new Intent();
+        intent.setClass(this, NotificationRequestFriend.class);
+        startService(intent);
+    }
+
+    private void initConnect() {
+        conn = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+                ((NotificationRequestFriend.MyBinder)iBinder).getNotificationRequestFriend().showNotification();
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName componentName) {
+                notificationService = null;
+            }
+        };
+        Intent intent = new Intent();
+        intent.setClass(this, NotificationRequestFriend.class);
+        bindService(intent, conn, Context.BIND_AUTO_CREATE);
+    }
+
+
+    private void showActivitySearch() {
+        Intent searchIntent = new Intent(MainActivity.this, FindFriendActivity.class);
+        startActivity(searchIntent);
+    }
+
+    private void inits() {
+
+        tabLayout = findViewById(R.id.tab_layout);
+        viewPager = findViewById(R.id.view_pager);
+        edtSearch = findViewById(R.id.edt_search);
+        imgCamera = findViewById(R.id.img_camera);
+        imgLogout = findViewById(R.id.img_logout);
+
+        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
+        viewPagerAdapter.addFragment(new NewsFeedFragment());
+        viewPagerAdapter.addFragment(new AddFriendRequestFragment());
+        viewPagerAdapter.addFragment(new ChatsFragment());
+        viewPagerAdapter.addFragment(new NotificationFragment());
+        viewPagerAdapter.addFragment(new AccountFragment());
+
+        viewPager.setAdapter(viewPagerAdapter);
+        tabLayout.setupWithViewPager(viewPager);
+        initTabLayout();
+
         imgLogout.setOnClickListener(view -> {
             logOutUser();
         });
@@ -59,42 +122,13 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //showActivitySearch();
-    }
-
-    private void showActivitySearch() {
-        edtSearch.setOnKeyListener((v, keyCode, event) -> {
-            // If the event is a key-down event on the "enter" button
-            if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
-                    (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                Intent searchIntent = new Intent(MainActivity.this, FindFriendActivity.class);
-                startActivity(searchIntent);
+        edtSearch.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                showActivitySearch();
                 return true;
             }
-            return false;
         });
-    }
-
-    private void inits() {
-//        toolbar = findViewById(R.id.main_app_bar);
-//        setSupportActionBar(toolbar);
-
-        tabLayout = findViewById(R.id.tab_layout);
-        viewPager = findViewById(R.id.view_pager);
-        edtSearch = findViewById(R.id.btn_search);
-        imgCamera = findViewById(R.id.img_camera);
-        imgLogout = findViewById(R.id.img_logout);
-
-        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
-        viewPagerAdapter.addFragment(new NewsFeedFragment());
-        viewPagerAdapter.addFragment(new AddFriendRequestFragment());
-        viewPagerAdapter.addFragment(new ChatsFragment());
-        viewPagerAdapter.addFragment(new NotificationFragment());
-        viewPagerAdapter.addFragment(new AccountFragment());
-//        viewPagerAdapter.addFragment(new FriendsFragment());
-
-        viewPager.setAdapter(viewPagerAdapter);
-        tabLayout.setupWithViewPager(viewPager);
-        initTabLayout();
     }
 
     private void initTabLayout(){
@@ -195,9 +229,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void logOutUser() {
-        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-        finish();
+        Dialog dialogLogOut = new Dialog(this);
+        dialogLogOut.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialogLogOut.setContentView(R.layout.dialog_conform_log_out);
+        dialogLogOut.setCanceledOnTouchOutside(false);
+
+        Button btnConform = dialogLogOut.findViewById(R.id.btn_submit);
+        Button btnCancel = dialogLogOut.findViewById(R.id.btn_cancel);
+
+        btnCancel.setOnClickListener(view -> {
+            dialogLogOut.dismiss();
+        });
+
+        btnConform.setOnClickListener(view->{
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
+        });
+
+        dialogLogOut.show();
     }
+
 }

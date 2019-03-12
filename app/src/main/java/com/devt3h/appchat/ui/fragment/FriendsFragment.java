@@ -14,6 +14,7 @@ import com.devt3h.appchat.R;
 import com.devt3h.appchat.adapter.UserAdapter;
 import com.devt3h.appchat.com.MyApplication;
 import com.devt3h.appchat.helper.Constants;
+import com.devt3h.appchat.model.AccountUser;
 import com.devt3h.appchat.model.Friend;
 import com.devt3h.appchat.model.User;
 import com.google.firebase.auth.FirebaseAuth;
@@ -39,7 +40,7 @@ import io.reactivex.schedulers.Schedulers;
 public class FriendsFragment extends Fragment implements UserAdapter.IUser {
     private RecyclerView rvUsers;
     private UserAdapter adapter;
-    private List<User> friendList;
+    private List<AccountUser> friendList;
     private List<String> listId;
     private Disposable disposableStatusFriend;
     private DatabaseReference databaseReference;
@@ -179,7 +180,7 @@ public class FriendsFragment extends Fragment implements UserAdapter.IUser {
     }
 
     private void updateAdapterFrient(DataSnapshot dataSnapshot) {
-        User user = dataSnapshot.getValue(User.class);
+        AccountUser user = dataSnapshot.getValue(AccountUser.class);
         if (listId != null) {
             for (int i = 0; i < listId.size(); i++) {
                 if (user.getId().equals(listId.get(i))) {
@@ -205,7 +206,7 @@ public class FriendsFragment extends Fragment implements UserAdapter.IUser {
     }
 
     @Override
-    public User getUser(int position) {
+    public AccountUser getUser(int position) {
         return friendList.get(position);
     }
 
