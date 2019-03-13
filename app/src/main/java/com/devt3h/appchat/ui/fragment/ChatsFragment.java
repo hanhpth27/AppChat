@@ -45,7 +45,6 @@ public class ChatsFragment extends Fragment {
 
         rvHistoryChat.setHasFixedSize(true);
         LinearLayoutManager historyChatLayout = new LinearLayoutManager(getContext());
-        historyChatLayout.setStackFromEnd(true);
         rvHistoryChat.setLayoutManager(historyChatLayout);
 
         mUsers = new ArrayList<>();

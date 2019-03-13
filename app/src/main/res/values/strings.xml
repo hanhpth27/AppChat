@@ -32,7 +32,7 @@
     <string name="conform_change_profile">Are you sure change your profile?</string>
     <string name="conform_log_out">Are you sure log out?</string>
 
-    <string name="type_message">Type message ..</string>
+    <string name="type_message">Type message ...</string>
     <string name="request_status">Please update your status</string>
     <string name="not_change">You don\'t change anything</string>
     <string name="send_message">Send Message</string>
