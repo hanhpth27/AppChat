@@ -16,13 +16,14 @@
         android:padding="5dp">
 
         <ImageView
+            android:id="@+id/img_back"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:src="@drawable/ic_arrow_back_white_24dp"
             android:layout_gravity="center_vertical" />
 
-        <MultiAutoCompleteTextView
+        <EditText
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:backgroundTint="@color/white"

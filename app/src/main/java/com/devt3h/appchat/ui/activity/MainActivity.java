@@ -129,6 +129,11 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+
+        imgCamera.setOnClickListener(view -> {
+            Intent postIntent = new Intent(MainActivity.this, PostActivity.class);
+            startActivity(postIntent);
+        });
     }
 
     private void initTabLayout(){

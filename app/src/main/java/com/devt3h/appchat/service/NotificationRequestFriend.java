@@ -85,6 +85,7 @@ public class NotificationRequestFriend extends Service {
             NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             manager.createNotificationChannel(chal);
         }
+
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
         builder.setContentTitle("Music app");

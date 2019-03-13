@@ -3,6 +3,7 @@ package com.devt3h.appchat.helper;
 public class Constants {
     public static final String ARG_USERS = "Users";
     public static final String ARG_FRIENDS = "Friends";
+    public static final String ARG_POST = "Posts";
     public static final String STG_IMAGE = "Avatar";
     public static final String STG_COVER = "Cover";
 
@@ -15,6 +16,7 @@ public class Constants {
     public static final String KEY_BIRTHDAY = "birthday";
     public static final String KEY_CAREER = "career";
     public static final String KEY_COUNTRY = "country";
+
     public static final String KEY_SENDER_ID = "sender_id";
     public static final String KEY_STATUS = "status";
 

@@ -1,5 +1,6 @@
 package com.devt3h.appchat.ui.activity;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -42,7 +43,8 @@ public class FindFriendActivity extends AppCompatActivity {
     private RecyclerView rvUser;
     private List<AccountUser> userList;
     private List<String> sUserName;
-    private MultiAutoCompleteTextView edtKey;
+    private EditText edtKey;
+    private ImageView imgBack;
 
     private DatabaseReference mDatabase;
     @Override
@@ -115,38 +117,17 @@ public class FindFriendActivity extends AppCompatActivity {
             }
             return false;
         });
-    }
 
-    private void showCompleteStart(List<String> sUserName, List<AccountUser> userList) {
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line,
-                sUserName);
-        edtKey.setTokenizer(new SpaceTokenizer());
-        edtKey.setAdapter(adapter);
-        edtKey.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                AccountUser accountUser = new AccountUser();
-                accountUser = userList.get(i);
-                userList.clear();
-                userList.add(accountUser);
-                adapterUser = new UserAdapter(new UserAdapter.IUser(){
-                    @Override
-                    public int getCount() {
-                        return 1;
-                    }
-
-                    @Override
-                    public AccountUser getUser(int position) {
-                        return userList.get(position);
-                    }
-                }, false);
-                rvUser.setAdapter(adapterUser);
-            }
+        imgBack.setOnClickListener(view -> {
+            closeSearch();
+            //finish();
+            //onBackPressed();
         });
     }
 
     private void inits() {
         edtKey = findViewById(R.id.edt_key);
+        imgBack = findViewById(R.id.img_back);
 
         rvUser = findViewById(R.id.rv_find_user);
         rvUser.setLayoutManager(new LinearLayoutManager(this));
@@ -155,6 +136,11 @@ public class FindFriendActivity extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance().getReference(Constants.ARG_USERS);
         userList = new ArrayList<>();
         sUserName = new ArrayList<>();
+    }
+
+    private void closeSearch(){
+        Intent intent = new Intent(FindFriendActivity.this, MainActivity.class);
+        startActivity(intent);
     }
 
     private void searchFriend(final String key){
@@ -243,5 +229,11 @@ public class FindFriendActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        closeSearch();
     }
 }
