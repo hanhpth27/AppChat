@@ -3,6 +3,7 @@ package com.devt3h.appchat.ui.activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -27,6 +28,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private FirebaseAuth mAuth;
     private ProgressDialog progressLoginDialog;
     private Toolbar toolbar;
+    SharedPreferences sharedPreferences;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +51,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         btnRegister.setOnClickListener(this);
         btnForgotPassword.setOnClickListener(this);
 
+        sharedPreferences = getSharedPreferences("USER",MODE_PRIVATE);
+        String email = sharedPreferences.getString("email","");
+        edtEmail.setText(email);
+
     }
 
     @Override
@@ -56,6 +62,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         switch (v.getId()) {
             case R.id.btn_login:
                 loginUser();
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("email",edtEmail.getText().toString());
+                editor.commit();
                 break;
             case R.id.btn_register:
                 openRegisterActivity();

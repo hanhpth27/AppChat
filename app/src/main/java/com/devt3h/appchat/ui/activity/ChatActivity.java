@@ -385,6 +385,10 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onPause() {
         super.onPause();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference(Constants.ARG_USERS).child(senderId);
+        Map<String,Object> map = new HashMap<>();
+        map.put("online",false);
+        reference.updateChildren(map);
         reference.removeEventListener(seenMessageEventListener);
     }
 }

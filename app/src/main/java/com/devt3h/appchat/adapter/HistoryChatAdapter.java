@@ -70,7 +70,8 @@ public class HistoryChatAdapter extends RecyclerView.Adapter<HistoryChatAdapter.
             historyChatViewHolder.ivOnline.setVisibility(View.GONE);
             historyChatViewHolder.ivOffline.setVisibility(View.VISIBLE);
         }
-        loadLastMessage(user.getId(),historyChatViewHolder.tvLastMessage);
+        if(currentUser != null)
+            loadLastMessage(user.getId(),historyChatViewHolder.tvLastMessage);
 
         historyChatViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

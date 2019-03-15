@@ -245,6 +245,7 @@ public class MainActivity extends AppCompatActivity {
         dialogLogOut.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialogLogOut.setContentView(R.layout.dialog_conform_log_out);
         dialogLogOut.setCanceledOnTouchOutside(false);
+        dialogLogOut.show();
 
         Button btnConform = dialogLogOut.findViewById(R.id.btn_submit);
         Button btnCancel = dialogLogOut.findViewById(R.id.btn_cancel);
@@ -255,13 +256,14 @@ public class MainActivity extends AppCompatActivity {
 
         btnConform.setOnClickListener(view->{
             mAuth.signOut();
+            dialogLogOut.dismiss();
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             finish();
         });
 
-        dialogLogOut.show();
+
     }
     public void setStatusOnline(boolean b){
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference(Constants.ARG_USERS).child(currentUserId);
