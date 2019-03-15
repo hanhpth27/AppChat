@@ -9,19 +9,20 @@ public class User {
     private String country;
     private String status;
     private String career;
-    private boolean isOnline;
+    private boolean online;
     private long lastUpdateStatus;
 
     public User() {
     }
 
 
-    public User(String name, String email, String avatarURL, String id, String birthday) {
+    public User(String name, String email, String avatarURL, String id, String birthday, boolean online) {
         this.name = name;
         this.email = email;
         this.avatarURL = avatarURL;
         this.id = id;
         this.birthday = birthday;
+        this.online = online;
     }
 
     public String getBirthday() {
@@ -65,12 +66,9 @@ public class User {
     }
 
     public boolean isOnline() {
-        return isOnline;
+        return online;
     }
 
-    public void setOnline(boolean online) {
-        isOnline = online;
-    }
     public String getCountry() {
         return country;
     }
@@ -101,5 +99,9 @@ public class User {
 
     public void setLastUpdateStatus(long lastUpdateStatus) {
         this.lastUpdateStatus = lastUpdateStatus;
+    }
+
+    public void setOnline(boolean online) {
+        this.online = online;
     }
 }

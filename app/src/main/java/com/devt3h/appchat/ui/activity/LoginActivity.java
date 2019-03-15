@@ -82,16 +82,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         btnConform.setOnClickListener(view -> {
             String email = edtEmail.getText().toString();
             if(email.isEmpty()){
-                Helper.showToast(this, "Please enter your email");
+                Helper.showToast(this, getString(R.string.notice_enter_email));
             }else{
                 mAuth.sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if(task.isSuccessful()){
-                            Helper.showToast(LoginActivity.this, "Check email to reset your password!");
+                            Helper.showToast(LoginActivity.this, getString(R.string.check_email));
                             dialog.dismiss();
                         }else {
-                            Helper.showToast(LoginActivity.this, "Fail to send reset password email!");
+                            Helper.showToast(LoginActivity.this, getString(R.string.fail_reset_pastword));
                             dialog.dismiss();
                         }
                     }
@@ -112,10 +112,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         String password = edtPassword.getText().toString();
 
         if(email.isEmpty() || password.isEmpty()){
-            Helper.showToast(LoginActivity.this,"Điền đầy đủ email và mật khẩu");
+            Helper.showToast(LoginActivity.this,getString(R.string.type_full_infor));
         }else {
-            progressLoginDialog.setTitle("Loginning Your Account");
-            progressLoginDialog.setMessage("Please Wait ... ");
+            progressLoginDialog.setTitle(getString(R.string.logining_account));
+            progressLoginDialog.setMessage(getString(R.string.please_wait));
             progressLoginDialog.show();
             mAuth.signInWithEmailAndPassword(email,password)
                     .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -127,7 +127,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 startActivity(intent);
                                 finish();
                             }else {
-                                Helper.showToast(LoginActivity.this,"Lỗi, thử lại sau");
+                                Helper.showToast(LoginActivity.this,getString(R.string.fail_try_again));
                             }
                             progressLoginDialog.dismiss();
                         }

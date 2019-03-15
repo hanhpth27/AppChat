@@ -1,5 +1,6 @@
 package com.devt3h.appchat.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -40,6 +41,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         return new MessageViewHolder(view);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull MessageViewHolder messageViewHolder, int i) {
         Chat chat = iMessage.getChat(i);
@@ -59,6 +61,15 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                     .into(messageViewHolder.ivMessageImage);
 
         }
+        if(i == iMessage.getCount()-1){
+            if(chat.isSeen()){
+                messageViewHolder.tvSeen.setText(context.getString(R.string.seen));
+            }else {
+                messageViewHolder.tvSeen.setText(context.getString(R.string.sent));
+            }
+        }else {
+            messageViewHolder.tvSeen.setVisibility(View.GONE);
+        }
 
 
     }
@@ -72,11 +83,13 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         private ImageView ivAvatarChat;
         private TextView tvMessage;
         private ImageView ivMessageImage;
+        private TextView tvSeen;
         public MessageViewHolder(@NonNull View itemView) {
             super(itemView);
             ivAvatarChat = itemView.findViewById(R.id.iv_avatar_chat);
             tvMessage = itemView.findViewById(R.id.tv_message);
             ivMessageImage = itemView.findViewById(R.id.iv_message_image);
+            tvSeen = itemView.findViewById(R.id.tv_seen);
         }
     }
 

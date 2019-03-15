@@ -1,43 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="10dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="horizontal"
     android:layout_marginBottom="5dp"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:orientation="horizontal"
+    android:padding="10dp">
 
-    <com.devt3h.appchat.ui.customview.CircleImageViewStatus
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:id="@+id/img_avatar"
-        android:src="@drawable/ic_avatar"/>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <com.devt3h.appchat.ui.customview.CircleImageViewStatus
+            android:id="@+id/img_avatar"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_avatar" />
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imv_status_on"
+            android:layout_alignRight="@id/img_avatar"
+            android:layout_alignBottom="@id/img_avatar"
+            android:layout_width="14dp"
+            app:civ_border_width="10dp"
+            android:layout_height="14dp"
+            app:civ_border_color="#05df29"
+            android:src="@mipmap/ic_launcher"
+            />
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imv_status_off"
+            android:layout_alignRight="@id/img_avatar"
+            android:layout_alignBottom="@id/img_avatar"
+            android:layout_width="14dp"
+            app:civ_border_width="10dp"
+            android:layout_height="14dp"
+            android:src="@mipmap/ic_launcher"
+            app:civ_border_color="#bfbfbf"
+            />
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:orientation="vertical">
 
         <TextView
+            android:id="@+id/tv_username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:paddingLeft="16dp"
             android:text="Username"
             android:textColor="@color/black"
-            android:gravity="center_vertical"
-            android:textSize="16sp"
-            android:paddingLeft="16dp"
-            android:id="@+id/tv_username"/>
+            android:textSize="16sp" />
 
         <TextView
+            android:id="@+id/tv_last_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:textSize="14sp"
+            android:maxLines="1"
             android:paddingLeft="16dp"
-            android:id="@+id/tv_last_message"
-            android:maxLines="1"/>
+            android:textSize="14sp" />
     </LinearLayout>
 </LinearLayout>

@@ -48,7 +48,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Register");
+        getSupportActionBar().setTitle(R.string.register);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         edtName = findViewById(R.id.edt_name);
@@ -91,8 +91,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
     }
     private void register(final String name, String email, String password, final String birthday, String career, String country){
-        progressRegisterDialog.setTitle("Creating new account");
-        progressRegisterDialog.setMessage("Please wait ...");
+        progressRegisterDialog.setTitle(getString(R.string.creating_new_account));
+        progressRegisterDialog.setMessage(getString(R.string.please_wait));
         progressRegisterDialog.show();
 
         mAuth.createUserWithEmailAndPassword(email,password)
@@ -123,7 +123,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                                 }
                             });
                         }else {
-                            Helper.showToast(RegisterActivity.this,"Lỗi xảy ra khi đăng ký, vui lòng thử lại!");
+                            Helper.showToast(RegisterActivity.this,getString(R.string.fail_register));
                         }
                         progressRegisterDialog.dismiss();
                     }

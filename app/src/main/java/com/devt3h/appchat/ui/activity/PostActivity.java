@@ -81,8 +81,8 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
         });
 
         progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Add New Post");
-        progressDialog.setMessage("Please wait, while we are updating your post ...");
+        progressDialog.setTitle(getString(R.string.add_new_post));
+        progressDialog.setMessage(getString(R.string.wait_update_post));
 
 
         binding.imgClose.setOnClickListener(this);
