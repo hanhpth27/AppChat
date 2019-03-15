@@ -37,9 +37,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private void inits() {
         progressLoginDialog = new ProgressDialog(this);
-        toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Login");
+//        toolbar = findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
+//        getSupportActionBar().setTitle("Login");
         edtEmail = findViewById(R.id.edt_email);
         edtPassword = findViewById(R.id.edt_password);
         btnLogin = findViewById(R.id.btn_login);
@@ -89,8 +89,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     public void onComplete(@NonNull Task<Void> task) {
                         if(task.isSuccessful()){
                             Helper.showToast(LoginActivity.this, "Check email to reset your password!");
+                            dialog.dismiss();
                         }else {
                             Helper.showToast(LoginActivity.this, "Fail to send reset password email!");
+                            dialog.dismiss();
                         }
                     }
                 });

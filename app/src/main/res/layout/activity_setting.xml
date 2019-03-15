@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_grey_500">
+    android:background="@color/white">
 
     <include layout="@layout/app_bar_layout"
         android:id="@+id/setting_account"/>
@@ -46,9 +46,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_input_top"
                     android:hint="@string/your_name"
-                    android:textColorHint="@color/white"
-                    android:textColor="@color/white"
-                    android:backgroundTint="@color/white"/>
+                    android:textColorHint="@color/color_grey_500"
+                    android:textColor="@color/black"
+                    android:backgroundTint="@color/color_grey_500"/>
 
             </android.support.design.widget.TextInputLayout>
 
@@ -63,9 +63,9 @@
                     android:inputType="textEmailAddress"
                     android:layout_marginTop="@dimen/margin_input_top"
                     android:hint="@string/your_email"
-                    android:textColorHint="@color/white"
-                    android:textColor="@color/white"
-                    android:backgroundTint="@color/white"/>
+                    android:textColorHint="@color/color_grey_500"
+                    android:textColor="@color/black"
+                    android:backgroundTint="@color/color_grey_500"/>
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -78,9 +78,9 @@
                     android:layout_height="wrap_content" android:layout_marginTop="@dimen/margin_input_top"
                     android:hint="@string/password"
                     android:inputType="textPassword"
-                    android:textColorHint="@color/white"
-                    android:textColor="@color/white"
-                    android:backgroundTint="@color/white"/>
+                    android:textColorHint="@color/color_grey_500"
+                    android:textColor="@color/black"
+                    android:backgroundTint="@color/color_grey_500"/>
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -93,9 +93,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_input_top"
                     android:hint="@string/your_status"
-                    android:textColorHint="@color/white"
-                    android:textColor="@color/white"
-                    android:backgroundTint="@color/white"/>
+                    android:textColorHint="@color/color_grey_500"
+                    android:textColor="@color/black"
+                    android:backgroundTint="@color/color_grey_500"/>
             </android.support.design.widget.TextInputLayout>
 
         </LinearLayout>

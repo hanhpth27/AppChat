@@ -88,9 +88,9 @@ public class NotificationRequestFriend extends Service {
 
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
-        builder.setContentTitle("Music app");
+        builder.setContentTitle("Chat App");
         builder.setContentText(getResources().getString(R.string.notification_add_friend));
-        builder.setSmallIcon(R.drawable.ic_chat);
+        builder.setSmallIcon(R.drawable.ic_person_add);
 
         Intent intent = new Intent();
         intent.setAction("CLOSE");

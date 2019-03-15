@@ -25,6 +25,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,6 +80,12 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
                     .override(getResources().getDimensionPixelSize(R.dimen.size_image), getResources().getDimensionPixelSize(R.dimen.size_image))
                     .centerCrop()
                     .into(imgAvatar);
+
+//            Picasso.get().load(avatarURL)
+//                    .centerCrop()
+//                    .resize(getResources().getDimensionPixelSize(R.dimen.size_image),
+//                            getResources().getDimensionPixelSize(R.dimen.size_image))
+//                    .into(imgAvatar);
 
         }
 

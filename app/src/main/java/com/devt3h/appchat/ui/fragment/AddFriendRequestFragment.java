@@ -46,20 +46,21 @@ public class AddFriendRequestFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_request_friend, container, false);
-
         rvRequestFriend = v.findViewById(R.id.rv_request_friend);
         rvRequestFriend.setLayoutManager(new LinearLayoutManager(container.getContext()));
 
         requestFriendList = new ArrayList<>();
         listId = new ArrayList<>();
         userId = FirebaseAuth.getInstance().getUid();
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+
+        changeIsSee();
 
         readRequestFriend();
         return v;
     }
 
     private void readRequestFriend() {
-        databaseReference = FirebaseDatabase.getInstance().getReference();
 
         databaseReference.child(Constants.ARG_FRIENDS).addChildEventListener(new ChildEventListener() {
             @Override
