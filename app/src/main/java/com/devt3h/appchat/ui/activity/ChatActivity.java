@@ -1,8 +1,14 @@
 package com.devt3h.appchat.ui.activity;
 
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +17,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.devt3h.appchat.R;
 import com.devt3h.appchat.adapter.MessageAdapter;
@@ -18,6 +25,8 @@ import com.devt3h.appchat.helper.Constants;
 import com.devt3h.appchat.helper.Helper;
 import com.devt3h.appchat.model.Chat;
 import com.devt3h.appchat.model.User;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -25,6 +34,16 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.sinch.android.rtc.PushPair;
+import com.sinch.android.rtc.Sinch;
+import com.sinch.android.rtc.SinchClient;
+import com.sinch.android.rtc.calling.Call;
+import com.sinch.android.rtc.calling.CallClient;
+import com.sinch.android.rtc.calling.CallClientListener;
+import com.sinch.android.rtc.calling.CallListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,33 +51,52 @@ import java.util.List;
 
 public class ChatActivity extends AppCompatActivity implements View.OnClickListener {
     private EditText edtMessage;
-    private ImageButton btnSend, btnCallVoice, btnCallVideo;
+    private ImageButton btnSend, btnCallVoice, btnCallVideo, btnSelectImage;
     private TextView tvNameOfFriend;
     private RecyclerView rvMessage;
     private FirebaseUser currentUser;
     private DatabaseReference reference;
+    private StorageReference messageImgRef;
     private Toolbar toolbar;
     private List<Chat> listChat;
     private MessageAdapter messageAdapter;
+    private SinchClient sinchClient;
+    private Call call;
+    private Context context;
+    private static int PICK_IMAGE = 1;
+    private String receiverId;
+    private String senderId;
+    private ProgressDialog loadingSendImageDialog;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         inits();
+        handleCall();
     }
 
-    private void inits(){
+    private void inits() {
+        context = this;
         edtMessage = findViewById(R.id.edt_message);
         btnSend = findViewById(R.id.btn_send);
         rvMessage = findViewById(R.id.rv_message);
         tvNameOfFriend = findViewById(R.id.tv_user_chat_name);
         btnCallVoice = findViewById(R.id.btn_call_voice);
         btnCallVideo = findViewById(R.id.btn_call_video);
+        btnSelectImage = findViewById(R.id.btn_select_image);
         btnCallVoice.setOnClickListener(this);
         btnCallVideo.setOnClickListener(this);
+        btnSelectImage.setOnClickListener(this);
+        loadingSendImageDialog = new ProgressDialog(context);
+
+        receiverId = getIntent().getStringExtra("userId");
+        senderId = FirebaseAuth.getInstance().getUid();
+
+        messageImgRef = FirebaseStorage.getInstance().getReference().child("Message_Image");
 
         // toolbar
-        toolbar =findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -99,17 +137,26 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onClick(View v) {
                 String message = edtMessage.getText().toString();
-                if(!message.isEmpty()){
-                    sendMessage(currentUser.getUid(),userId,message);
+                if (!message.isEmpty()) {
+                    sendMessage(currentUser.getUid(), userId, message);
                 } else {
-                    Helper.showToast(getApplicationContext(),"Tin nhắn rỗng");
+                    Helper.showToast(getApplicationContext(), "Tin nhắn rỗng");
                 }
 
             }
         });
+        btnSelectImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                intent.setType("image/*");
+                startActivityForResult(intent, PICK_IMAGE);
+            }
+        });
     }
 
-    private void sendMessage(String senderId, String receiverId, String message){
+    private void sendMessage(String senderId, String receiverId, String message) {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("sender_id", senderId);
@@ -121,7 +168,8 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         reference.child("Chats").push().setValue(hashMap);
         edtMessage.setText("");
     }
-    private void readMessage(final String senderId, final String receiverId, final String avatarURL){
+
+    private void readMessage(final String senderId, final String receiverId, final String avatarURL) {
         listChat = new ArrayList<>();
 
         reference = FirebaseDatabase.getInstance().getReference("Chats");
@@ -130,10 +178,10 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 listChat.clear();
                 currentUser = FirebaseAuth.getInstance().getCurrentUser();
-                for (DataSnapshot data: dataSnapshot.getChildren()){
+                for (DataSnapshot data : dataSnapshot.getChildren()) {
                     Chat chat = data.getValue(Chat.class);
-                    if((senderId.equals(chat.getSender_id()) && receiverId.equals(chat.getReceiver_id()))
-                        || (senderId.equals(chat.getReceiver_id()) && receiverId.equals(chat.getSender_id()))){
+                    if ((senderId.equals(chat.getSender_id()) && receiverId.equals(chat.getReceiver_id()))
+                            || (senderId.equals(chat.getReceiver_id()) && receiverId.equals(chat.getSender_id()))) {
                         listChat.add(chat);
                     }
                 }
@@ -168,6 +216,131 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btn_call_voice:
+                callUser(getIntent().getStringExtra("userId"));
+                break;
+            default:
+                break;
+        }
 
+    }
+
+    private void handleCall() {
+        sinchClient = Sinch.getSinchClientBuilder()
+                .context(this)
+                .applicationKey("f5dfada3-94a5-432a-902d-82a235225cc2")
+                .applicationSecret("n5S6IEurMEaL0t0LqgWUCw==")
+                .environmentHost("sandbox.sinch.com")
+                .userId(currentUser.getUid())
+                .build();
+        sinchClient.setSupportCalling(true);
+        sinchClient.startListeningOnActiveConnection();
+        sinchClient.getCallClient().addCallClientListener(new SinchCallClientListener());
+
+        sinchClient.start();
+    }
+
+    private class SinchCallClientListener implements CallClientListener {
+        @Override
+        public void onIncomingCall(CallClient callClient, Call incomingCall) {
+            AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+            alertDialog.setTitle("CALLING");
+            alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Pick Up", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    call = incomingCall;
+                    call.answer();
+                    call.addCallListener(new SinchCallListener());
+                }
+            });
+            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, " Reject", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    call.hangup();
+                }
+            });
+            alertDialog.show();
+        }
+    }
+
+    private class SinchCallListener implements CallListener {
+
+        @Override
+        public void onCallProgressing(Call call) {
+            Helper.showToast(getApplicationContext(), "Ringing");
+        }
+
+        @Override
+        public void onCallEstablished(Call call) {
+            Helper.showToast(getApplicationContext(), "Call Established");
+        }
+
+        @Override
+        public void onCallEnded(Call endCall) {
+            Helper.showToast(getApplicationContext(), "Call ended");
+            call = null;
+            endCall.hangup();
+        }
+
+        @Override
+        public void onShouldSendPushNotification(Call call, List<PushPair> list) {
+
+        }
+    }
+
+    public void callUser(String recipientId) {
+        if (call == null) {
+            call = sinchClient.getCallClient().callUser(recipientId);
+            call.addCallListener(new SinchCallListener());
+            showCallDialog(call);
+        }
+    }
+
+    private void showCallDialog(Call call) {
+        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+        alertDialog.setTitle("Thông báo");
+        alertDialog.setMessage("Đang gọi");
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Tắt", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                call.hangup();
+                alertDialog.dismiss();
+            }
+        });
+        alertDialog.show();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGE && resultCode == RESULT_OK && data != null) {
+            loadingSendImageDialog.setTitle("Sending image");
+            loadingSendImageDialog.setMessage("Please wait ...");
+            loadingSendImageDialog.show();
+            Uri imageURI = data.getData();
+            StorageReference filePath = messageImgRef.child(receiverId + ".jpg");
+            UploadTask uploadTask = filePath.putFile(imageURI);
+            Task<Uri> urlTask = uploadTask.continueWithTask(task -> filePath.getDownloadUrl()).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    String linkImage = task.getResult().toString();
+                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+                    HashMap<String, Object> hashMap = new HashMap<>();
+                    hashMap.put("sender_id", senderId);
+                    hashMap.put("receiver_id", receiverId);
+                    hashMap.put("message", linkImage);
+                    hashMap.put("type", "image");
+                    hashMap.put("seen", false);
+
+                    reference.child("Chats").push().setValue(hashMap);
+                    loadingSendImageDialog.dismiss();
+                } else {
+                    Helper.showToast(context, "Send image fail");
+                    loadingSendImageDialog.dismiss();
+                }
+
+            });
+        }
     }
 }

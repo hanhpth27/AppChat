@@ -43,12 +43,23 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     @Override
     public void onBindViewHolder(@NonNull MessageViewHolder messageViewHolder, int i) {
         Chat chat = iMessage.getChat(i);
-
-        messageViewHolder.tvMessage.setText(chat.getMessage());
         if(!iMessage.getAvatarURL().equals("default") && getItemViewType(i) == Constants.TYPE_MESSAGE_LEFT){
             Glide.with(context).load(iMessage.getAvatarURL())
                     .into(messageViewHolder.ivAvatarChat);
         }
+        if(chat.getType().equals("text")) {
+            messageViewHolder.tvMessage.setVisibility(View.VISIBLE);
+            messageViewHolder.tvMessage.setText(chat.getMessage());
+            messageViewHolder.ivMessageImage.setVisibility(View.GONE);
+        }else if(chat.getType().equals("image")){
+            messageViewHolder.ivMessageImage.setVisibility(View.VISIBLE);
+            messageViewHolder.tvMessage.setVisibility(View.GONE);
+            Glide.with(context).load(chat.getMessage())
+                    .placeholder(R.drawable.waiting)
+                    .into(messageViewHolder.ivMessageImage);
+
+        }
+
 
     }
 
@@ -60,10 +71,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     public class MessageViewHolder extends RecyclerView.ViewHolder {
         private ImageView ivAvatarChat;
         private TextView tvMessage;
+        private ImageView ivMessageImage;
         public MessageViewHolder(@NonNull View itemView) {
             super(itemView);
             ivAvatarChat = itemView.findViewById(R.id.iv_avatar_chat);
             tvMessage = itemView.findViewById(R.id.tv_message);
+            ivMessageImage = itemView.findViewById(R.id.iv_message_image);
         }
     }
 

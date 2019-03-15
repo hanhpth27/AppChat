@@ -106,7 +106,11 @@ public class HistoryChatAdapter extends RecyclerView.Adapter<HistoryChatAdapter.
                     Chat chat = data.getValue(Chat.class);
                     if (currentUser.getUid().equals(chat.getSender_id()) && userId.equals(chat.getReceiver_id())
                             || currentUser.getUid().equals(chat.getReceiver_id()) && userId.equals(chat.getSender_id())) {
-                        lastMessage = chat.getMessage();
+                        if(chat.getType().equals("text")) {
+                            lastMessage = chat.getMessage();
+                        }else {
+                            lastMessage = "Image";
+                        }
                     }
                 }
                 tvLastMessage.setText(lastMessage);
