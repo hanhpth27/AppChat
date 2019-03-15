@@ -55,7 +55,6 @@ public class DetailUserActivity extends AppCompatActivity {
         inits();
 
 
-        if(!user_id.equals(userCurrentId)){
             databaseReference.child(Constants.ARG_USERS).child(user_id).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -138,12 +137,7 @@ public class DetailUserActivity extends AppCompatActivity {
             sendMessageFragment.setArguments(bundle);
             transaction.add(R.id.fl_send_message,sendMessageFragment,SendMessageFragment.class.getName());
             transaction.commit();
-        }else {
-            Intent intent = new Intent(DetailUserActivity.this, SettingActivity.class);
-            startActivity(intent);
         }
-
-    }
 
     private void inits() {
         tvUsername = findViewById(R.id.tv_username);

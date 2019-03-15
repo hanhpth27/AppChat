@@ -40,7 +40,7 @@
         android:id="@+id/tv_status"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/request_status"
+        android:hint="You not have status"
         android:layout_marginTop="@dimen/margin_top"
         android:textColor="@color/white"
         android:textSize="16sp"
@@ -105,7 +105,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/fl_send_message"
-        android:layout_above="@id/fl_content_button">
+        android:layout_above="@id/fl_content_button"
+        android:layout_marginBottom="@dimen/margin_input_top">
 
     </FrameLayout>
 

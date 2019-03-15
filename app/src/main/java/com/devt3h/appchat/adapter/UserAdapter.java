@@ -15,6 +15,8 @@ import com.devt3h.appchat.model.AccountUser;
 import com.devt3h.appchat.model.User;
 import com.devt3h.appchat.ui.activity.DetailUserActivity;
 import com.devt3h.appchat.ui.activity.ChatActivity;
+import com.devt3h.appchat.ui.activity.SettingActivity;
+import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -23,6 +25,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder>{
     private IUser iUser;
     private Context context;
     private boolean isAdapterChat;
+    String idCurrentUser = FirebaseAuth.getInstance().getUid();
 
     public UserAdapter(IUser iUser, boolean isAdapterChat) {
         this.iUser = iUser;
@@ -66,10 +69,15 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder>{
                     intent.putExtra("userId",user.getId());
                     context.startActivity(intent);
                 }else {
-                    String id_user_visit = user.getId();
-                    Intent intent = new Intent(userHolder.itemView.getContext(), DetailUserActivity.class);
-                    intent.putExtra(Constants.KEY_VISIT_USER_ID, id_user_visit);
-                    userHolder.itemView.getContext().startActivity(intent);
+                    if(user.getId().equals(idCurrentUser)){
+                        Intent intent = new Intent(context,SettingActivity.class);
+                        context.startActivity(intent);
+                    }else {
+                        String id_user_visit = user.getId();
+                        Intent intent = new Intent(userHolder.itemView.getContext(), DetailUserActivity.class);
+                        intent.putExtra(Constants.KEY_VISIT_USER_ID, id_user_visit);
+                        userHolder.itemView.getContext().startActivity(intent);
+                    }
                 }
             }
 

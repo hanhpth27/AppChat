@@ -17,6 +17,7 @@ import com.devt3h.appchat.helper.Constants;
 import com.devt3h.appchat.helper.Helper;
 import com.devt3h.appchat.model.AccountUser;
 import com.devt3h.appchat.model.Friend;
+import com.devt3h.appchat.model.Post;
 import com.devt3h.appchat.ui.activity.SettingActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -39,6 +40,7 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
     private String idCurrent;
 
     List<String> listId ;
+    List<String> listPost;
 
     @Nullable
     @Override
@@ -60,6 +62,8 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
         });
 
         countFriend(idCurrent);
+        countPost(idCurrent);
+        tvEdit.setOnClickListener(this);
         return v;
     }
 
@@ -134,8 +138,6 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
 
             }
         });
-
-        tvEdit.setOnClickListener(this);
     }
 
     private void intit(View v) {
@@ -154,11 +156,49 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
 
         idCurrent = FirebaseAuth.getInstance().getCurrentUser().getUid();
         listId = new ArrayList<>();
+        listPost = new ArrayList<>();
     }
 
     @Override
     public void onClick(View view) {
         Intent iEdit = new Intent(getActivity(), SettingActivity.class);
         startActivity(iEdit);
+    }
+
+    private void countPost(String id){
+        rDatabase.child(Constants.ARG_POST).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                Post post = dataSnapshot.getValue(Post.class);
+                if(post!=null){
+                    if(post.getUid().equals(id)){
+                        listPost.add(post.getUid());
+                    }
+
+                    int count = listPost.size();
+                    tvPost.setText(count + " \nPosts");
+                }
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 }
