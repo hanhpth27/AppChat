@@ -43,6 +43,7 @@
         <service android:name=".service.NotificationRequestFriend" />
 
         <activity android:name=".ui.activity.PostActivity"></activity>
+        <activity android:name=".ui.activity.FriendsActivity"></activity>
     </application>
 
 </manifest>

@@ -18,6 +18,7 @@ import com.devt3h.appchat.helper.Helper;
 import com.devt3h.appchat.model.AccountUser;
 import com.devt3h.appchat.model.Friend;
 import com.devt3h.appchat.model.Post;
+import com.devt3h.appchat.ui.activity.FriendsActivity;
 import com.devt3h.appchat.ui.activity.SettingActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -64,6 +65,7 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
         countFriend(idCurrent);
         countPost(idCurrent);
         tvEdit.setOnClickListener(this);
+        tvFollowers.setOnClickListener(this);
         return v;
     }
 
@@ -161,8 +163,19 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
-        Intent iEdit = new Intent(getActivity(), SettingActivity.class);
-        startActivity(iEdit);
+        int id = view.getId();
+        switch (id){
+            case R.id.tv_edit_profile:
+                Intent iEdit = new Intent(getActivity(), SettingActivity.class);
+                startActivity(iEdit);
+                break;
+            case R.id.tv_followers:
+                Intent iFriends = new Intent(getActivity(), FriendsActivity.class);
+                startActivity(iFriends);
+                break;
+            default:
+                break;
+        }
     }
 
     private void countPost(String id){

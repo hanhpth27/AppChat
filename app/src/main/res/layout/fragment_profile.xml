@@ -5,7 +5,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.activity.DetailUserActivity"
     android:background="@color/color_grey_500"
     android:paddingBottom="@dimen/margin_input_horizontal">
 
