@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
         viewPagerAdapter.addFragment(new NewsFeedFragment());
         viewPagerAdapter.addFragment(new AddFriendRequestFragment());
         viewPagerAdapter.addFragment(new ChatsFragment());
-        viewPagerAdapter.addFragment(new NotificationFragment());
+        //viewPagerAdapter.addFragment(new NotificationFragment());
         viewPagerAdapter.addFragment(new AccountFragment());
 
         viewPager.setAdapter(viewPagerAdapter);
@@ -140,8 +140,8 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.getTabAt(0).setIcon(R.drawable.ic_newsfeed_selected);
         tabLayout.getTabAt(1).setIcon(R.drawable.ic_friend);
         tabLayout.getTabAt(2).setIcon(R.drawable.ic_mess);
-        tabLayout.getTabAt(3).setIcon(R.drawable.ic_notification);
-        tabLayout.getTabAt(4).setIcon(R.drawable.ic_account);
+        //tabLayout.getTabAt(3).setIcon(R.drawable.ic_notification);
+        tabLayout.getTabAt(3).setIcon(R.drawable.ic_account);
 
         tabLayout.setSelectedTabIndicatorColor(Color.parseColor("#ffffff"));
 
@@ -160,10 +160,10 @@ public class MainActivity extends AppCompatActivity {
                     case 2:
                         tab.setIcon(R.drawable.ic_mess_selected);
                         break;
+//                    case 3:
+//                        tab.setIcon(R.drawable.ic_notification_selected);
+//                        break;
                     case 3:
-                        tab.setIcon(R.drawable.ic_notification_selected);
-                        break;
-                    case 4:
                         tab.setIcon(R.drawable.ic_account_selected);
                         break;
                     default:
@@ -184,10 +184,10 @@ public class MainActivity extends AppCompatActivity {
                     case 2:
                         tab.setIcon(R.drawable.ic_mess);
                         break;
+//                    case 3:
+//                        tab.setIcon(R.drawable.ic_notification);
+//                        break;
                     case 3:
-                        tab.setIcon(R.drawable.ic_notification);
-                        break;
-                    case 4:
                         tab.setIcon(R.drawable.ic_account);
                         break;
                     default:
