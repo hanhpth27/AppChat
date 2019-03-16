@@ -131,7 +131,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:background="@drawable/bg_button_normal_login"
-            android:text="Register"
+            android:text="@string/register"
             android:textColor="@color/white" />
         </LinearLayout>
     </LinearLayout>

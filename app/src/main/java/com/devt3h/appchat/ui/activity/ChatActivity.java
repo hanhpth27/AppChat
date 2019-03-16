@@ -1,5 +1,6 @@
 package com.devt3h.appchat.ui.activity;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -46,8 +47,10 @@ import com.sinch.android.rtc.calling.CallClientListener;
 import com.sinch.android.rtc.calling.CallListener;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ChatActivity extends AppCompatActivity implements View.OnClickListener {
     private EditText edtMessage;
@@ -67,6 +70,8 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     private String receiverId;
     private String senderId;
     private ProgressDialog loadingSendImageDialog;
+    private Date date;
+    private ValueEventListener seenMessageEventListener;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -77,7 +82,9 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void inits() {
+
         context = this;
+        date = new Date();
         edtMessage = findViewById(R.id.edt_message);
         btnSend = findViewById(R.id.btn_send);
         rvMessage = findViewById(R.id.rv_message);
@@ -154,6 +161,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                 startActivityForResult(intent, PICK_IMAGE);
             }
         });
+        seenMessage(receiverId);
     }
 
     private void sendMessage(String senderId, String receiverId, String message) {
@@ -245,8 +253,8 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public void onIncomingCall(CallClient callClient, Call incomingCall) {
             AlertDialog alertDialog = new AlertDialog.Builder(context).create();
-            alertDialog.setTitle("CALLING");
-            alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Pick Up", new DialogInterface.OnClickListener() {
+            alertDialog.setTitle(getString(R.string.calling));
+            alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.pick_up), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     call = incomingCall;
@@ -254,7 +262,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                     call.addCallListener(new SinchCallListener());
                 }
             });
-            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, " Reject", new DialogInterface.OnClickListener() {
+            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.reject), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
@@ -269,17 +277,17 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
         @Override
         public void onCallProgressing(Call call) {
-            Helper.showToast(getApplicationContext(), "Ringing");
+            Helper.showToast(getApplicationContext(), getString(R.string.ringging));
         }
 
         @Override
         public void onCallEstablished(Call call) {
-            Helper.showToast(getApplicationContext(), "Call Established");
+            Helper.showToast(getApplicationContext(), getString(R.string.call_established));
         }
 
         @Override
         public void onCallEnded(Call endCall) {
-            Helper.showToast(getApplicationContext(), "Call ended");
+            Helper.showToast(getApplicationContext(), getString(R.string.call_ended));
             call = null;
             endCall.hangup();
         }
@@ -300,9 +308,9 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
     private void showCallDialog(Call call) {
         AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-        alertDialog.setTitle("Thông báo");
-        alertDialog.setMessage("Đang gọi");
-        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Tắt", new DialogInterface.OnClickListener() {
+        alertDialog.setTitle(getString(R.string.alert));
+        alertDialog.setMessage(getString(R.string.calling));
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.reject), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 call.hangup();
@@ -316,11 +324,11 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE && resultCode == RESULT_OK && data != null) {
-            loadingSendImageDialog.setTitle("Sending image");
-            loadingSendImageDialog.setMessage("Please wait ...");
+            loadingSendImageDialog.setTitle(getString(R.string.sending_image));
+            loadingSendImageDialog.setMessage(getString(R.string.please_wait));
             loadingSendImageDialog.show();
             Uri imageURI = data.getData();
-            StorageReference filePath = messageImgRef.child(receiverId + ".jpg");
+            StorageReference filePath = messageImgRef.child(receiverId + date.toString() + ".jpg");
             UploadTask uploadTask = filePath.putFile(imageURI);
             Task<Uri> urlTask = uploadTask.continueWithTask(task -> filePath.getDownloadUrl()).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
@@ -336,11 +344,51 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                     reference.child("Chats").push().setValue(hashMap);
                     loadingSendImageDialog.dismiss();
                 } else {
-                    Helper.showToast(context, "Send image fail");
+                    Helper.showToast(context, getString(R.string.fail_send_image));
                     loadingSendImageDialog.dismiss();
                 }
 
             });
         }
+    }
+    private void seenMessage(String userId){
+        reference = FirebaseDatabase.getInstance().getReference("Chats");
+        seenMessageEventListener = reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot data: dataSnapshot.getChildren()){
+                    Chat chat = data.getValue(Chat.class);
+                    if(chat.getReceiver_id().equals(currentUser.getUid())&& chat.getSender_id().equals(userId)){
+                        Map<String, Object> map = new HashMap<>();
+                        map.put("seen", true);
+                        data.getRef().updateChildren(map);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference(Constants.ARG_USERS).child(senderId);
+        Map<String,Object> map = new HashMap<>();
+        map.put("online",true);
+        reference.updateChildren(map);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference(Constants.ARG_USERS).child(senderId);
+        Map<String,Object> map = new HashMap<>();
+        map.put("online",false);
+        reference.updateChildren(map);
+        reference.removeEventListener(seenMessageEventListener);
     }
 }

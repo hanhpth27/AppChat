@@ -63,7 +63,15 @@ public class HistoryChatAdapter extends RecyclerView.Adapter<HistoryChatAdapter.
                     .centerCrop()
                     .into(historyChatViewHolder.ivAvatar);
         }
-        loadLastMessage(user.getId(),historyChatViewHolder.tvLastMessage);
+        if(user.isOnline()){
+            historyChatViewHolder.ivOnline.setVisibility(View.VISIBLE);
+            historyChatViewHolder.ivOffline.setVisibility(View.GONE);
+        }else {
+            historyChatViewHolder.ivOnline.setVisibility(View.GONE);
+            historyChatViewHolder.ivOffline.setVisibility(View.VISIBLE);
+        }
+        if(currentUser != null)
+            loadLastMessage(user.getId(),historyChatViewHolder.tvLastMessage);
 
         historyChatViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,12 +94,15 @@ public class HistoryChatAdapter extends RecyclerView.Adapter<HistoryChatAdapter.
     public class HistoryChatViewHolder extends ViewHolder {
         private ImageView ivAvatar;
         private TextView tvUsername, tvLastMessage;
+        private ImageView ivOnline, ivOffline;
 
         public HistoryChatViewHolder(@NonNull View itemView) {
             super(itemView);
             ivAvatar = itemView.findViewById(R.id.img_avatar);
             tvUsername = itemView.findViewById(R.id.tv_username);
             tvLastMessage = itemView.findViewById(R.id.tv_last_message);
+            ivOnline = itemView.findViewById(R.id.imv_status_on);
+            ivOffline = itemView.findViewById(R.id.imv_status_off);
         }
     }
 
@@ -108,7 +119,7 @@ public class HistoryChatAdapter extends RecyclerView.Adapter<HistoryChatAdapter.
                             || currentUser.getUid().equals(chat.getReceiver_id()) && userId.equals(chat.getSender_id())) {
                         if(chat.getType().equals("text")) {
                             lastMessage = chat.getMessage();
-                        }else {
+                        }else if(chat.getType().equals("image")){
                             lastMessage = "Image";
                         }
                     }

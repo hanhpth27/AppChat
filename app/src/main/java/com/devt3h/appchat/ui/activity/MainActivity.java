@@ -26,6 +26,7 @@ import android.widget.ImageView;
 
 import com.devt3h.appchat.R;
 import com.devt3h.appchat.adapter.ViewPagerAdapter;
+import com.devt3h.appchat.helper.Constants;
 import com.devt3h.appchat.service.NotificationRequestFriend;
 import com.devt3h.appchat.ui.fragment.AccountFragment;
 import com.devt3h.appchat.ui.fragment.AddFriendRequestFragment;
@@ -35,6 +36,11 @@ import com.devt3h.appchat.ui.fragment.NewsFeedFragment;
 import com.devt3h.appchat.ui.fragment.NotificationFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     public static final int OPEN_CAMERA = 1;
@@ -45,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView imgCamera, imgLogout;
     private NotificationRequestFriend notificationService;
     private ServiceConnection conn;
-
+    private String currentUserId;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
         
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
+        currentUserId = currentUser.getUid();
         if (currentUser == null) {
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
@@ -238,6 +245,7 @@ public class MainActivity extends AppCompatActivity {
         dialogLogOut.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialogLogOut.setContentView(R.layout.dialog_conform_log_out);
         dialogLogOut.setCanceledOnTouchOutside(false);
+        dialogLogOut.show();
 
         Button btnConform = dialogLogOut.findViewById(R.id.btn_submit);
         Button btnCancel = dialogLogOut.findViewById(R.id.btn_cancel);
@@ -248,13 +256,31 @@ public class MainActivity extends AppCompatActivity {
 
         btnConform.setOnClickListener(view->{
             mAuth.signOut();
+            dialogLogOut.dismiss();
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             finish();
         });
 
-        dialogLogOut.show();
+
+    }
+    public void setStatusOnline(boolean b){
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference(Constants.ARG_USERS).child(currentUserId);
+        Map<String,Object> map = new HashMap<>();
+        map.put("online",b);
+        reference.updateChildren(map);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setStatusOnline(true);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        setStatusOnline(false);
+    }
 }
